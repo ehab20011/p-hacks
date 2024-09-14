@@ -7,9 +7,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("refugee"); // 'refugee' or 'employee'
-
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // New: loading state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -23,36 +22,31 @@ function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Assuming response data has the necessary user info
         localStorage.setItem('userName', data.name);
-        navigate('/chatsystem'); // Navigate to chatsystem for both roles
-
-        
         if (role === "refugee") {
           console.log('Refugee logged in:', data.refugee.name);
-          localStorage.setItem('refugeeName', data.refugee.name); // Store refugee name
-          navigate('/refugeepage'); // Redirect to refugee page
+          localStorage.setItem('refugeeName', data.refugee.name);
+          navigate('/refugeepage');
         } else if (role === "employee") {
           console.log('Employee logged in:', data.employee.name);
-          localStorage.setItem('employeeName', data.employee.name); // Store employee name
-          navigate('/employeepage'); // Redirect to employee page
+          localStorage.setItem('employeeName', data.employee.name);
+          navigate('/employeepage');
         }
- 
       } else {
         console.error('Error from server:', data.message);
-        setError(data.message); // Display error message from the server
+        setError(data.message);
       }
     } catch (err) {
       console.error('Login failed:', err);
-      setError('Login failed, please try again.'); // General error message
+      setError('Login failed, please try again.');
     } finally {
-      setLoading(false); // Stop loading once the request finishes
+      setLoading(false);
     }
   };
 
@@ -62,10 +56,6 @@ function Login() {
     } else {
       navigate('/signup-worker');
     }
-
-  const handleSignupClick = () => {
-    // Navigate to the signup worker page
-    navigate('/signup-worker');
   };
 
   return (
@@ -104,73 +94,15 @@ function Login() {
                   Forgot Password?
                 </a>
                 <div className="button-container">
-                  <button type="submit" className="btn-login">
-                    Login
+                  <button type="submit" className="btn-login" disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
                   </button>
                   <button type="button" className="btn-signup" onClick={handleSignup}>
                     Sign Up
                   </button>
                 </div>
-                <div className="choose-role">
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="refugee"
-                      checked={role === "refugee"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    Refugee
-                  </label>
-                  <br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="employee"
-                      checked={role === "employee"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    Employee
-                  </label>
-                </div>
-                {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error */}
-                <a href="#" className="forgot-password">
-                  Forgot Password?
-                </a>
-                <button type="submit" className="btn-login" disabled={loading}>
-                  {loading ? "Logging in..." : "Login"} {/* Show loading state */}
-                </button>
               </form>
             </div>
-          <div className="options">
-            <h2>Login</h2>
-            <h2 onClick={handleSignupClick} style={{ cursor: 'pointer' }}>Sign Up</h2>
-          </div>
-          <div>
-            <form onSubmit={handleLogin}>
-              <div className="user-input">
-                <input
-                  type="text"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
-              <button type="button" className="forgot-password">
-                Forgot Password?
-              </button>
-              <button type="submit" className="btn-login">
-                Login
-              </button>
-            </form>
           </div>
         </div>
       </div>
