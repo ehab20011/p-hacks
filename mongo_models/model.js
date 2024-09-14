@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Refugee Schema
 const refugeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
@@ -10,27 +11,29 @@ const refugeeSchema = new mongoose.Schema({
   encampment: String,
   language: String,
   status: String,
-  createdAt: { type: Date, default: Date.now } 
+  createdAt: { type: Date, default: Date.now },
 });
 
-const workerSchema = new mongoose.Schema({
-  name: { type: String, required: true },           // First and last name combined
-  email: { type: String, required: true, unique: true }, // Email must be unique
-  password: { type: String, required: true },       // Hashed password (remember to hash it before saving)
-  role: { type: String, required: true },           // Job title (doctor, nurse, etc.)
-  encampment: { type: String, required: true },     // Camp location or reference
-  language: { type: String, required: false },      // Optional language field
-  dateOfBirth: { type: Date, required: true },      // Date of birth
-  gender: { type: String, required: false },        // Optional gender field
-  phoneNumber: { type: String, required: true },    // Phone number
-  idNumber: { type: String, required: true },       // ID number
-  createdAt: { type: Date, default: Date.now },     // Automatically set the created date
-}, { timestamps: true });                           // Automatically adds createdAt and updatedAt fields
+// Explicitly specify the collection name as 'Refugees'
+const Refugee = mongoose.model('Refugee', refugeeSchema, 'Refugees');
 
-// No more password hashing before saving
+// Worker Schema (for workers)
+const workerSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, required: true },
+  encampment: { type: String, required: true },
+  language: { type: String, required: false },
+  dateOfBirth: { type: Date, required: true },
+  gender: { type: String, required: false },
+  phoneNumber: { type: String, required: true },
+  idNumber: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+}, { timestamps: true });
+
+// Explicitly specify the collection name as 'Workers'
+const Worker = mongoose.model('Worker', workerSchema, 'Workers');
 
 // Export both models
-module.exports = {
-  Refugee: mongoose.model('Refugee', refugeeSchema),
-  Worker: mongoose.model('Worker', workerSchema)
-};
+module.exports = { Refugee, Worker };
