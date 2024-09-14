@@ -1,0 +1,34 @@
+# Ignore node_modules in both root and client folder
+node_modules/
+client/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore dotenv environment variable files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore build output
+build/
+
+# Ignore the coverage output from testing
+coverage/
+
+# Ignore dependency directories
+.bower_components/
+
+# Ignore IDE files (for various IDEs)
+.idea/
+.vscode/
+
+# Ignore any OS-specific files
+.DS_Store
+Thumbs.db

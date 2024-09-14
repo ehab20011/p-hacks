@@ -1,0 +1,266 @@
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+  }
+
+  
+
+  .side {
+
+    display: flex;
+
+  }
+
+  
+
+  body {
+
+    font-family: "Poppins", sans-serif;
+
+    background: white;
+
+    height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+  }
+
+  
+
+  .refu {
+
+    color: blue;
+
+    font-size: 2rem;
+
+    margin-bottom: 3rem;
+
+    justify-content: center;
+
+    align-items: center;
+
+    display: flex;
+
+  }
+
+  
+
+  .left-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    width: 50%;
+
+    overflow: hidden;
+
+  }
+
+  
+
+  .left-container img {
+
+    max-width: 100%;
+
+    height: auto;
+
+    display: block;
+
+  }
+
+  
+
+  .right-container {
+
+    width: 50%;
+
+    padding: 30px;
+
+    background: #F8F9F9;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+  }
+
+  
+
+  .options {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    width: 90%;
+
+    max-width: 300px;
+
+    margin-bottom: 2.5rem;
+
+  }
+
+  
+
+  .options h2 {
+
+    cursor: pointer;
+
+    padding: 10px 10px;
+
+    color: black;
+
+  }
+
+  
+
+  .form-container {
+
+    padding: 40px;
+
+    border-radius: 16px;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    width: 300px;
+
+    text-align: center;
+
+    margin-top: 20px;
+
+  }
+
+  
+
+  .user-input {
+
+    margin-bottom: 20px;
+
+  }
+
+  
+
+  .user-input input {
+
+    width: 100%;
+
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    color: black;
+
+  }
+
+  
+
+  .forgot-password {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+
+  
+
+  .btn-login {
+
+    width: 100%;
+
+    padding: 10px;
+
+    background-color: blue;
+
+    color: #fff;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  
+
+  .btn-login:hover {
+
+    background-color: navy;
+
+  }
+
+  
+
+  /* Ensure right-container matches the image height */
+
+  .left-container img {
+
+    max-width: 100%;
+
+    height: auto;
+
+    display: block;
+
+  }
+
+  
+
+  .right-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+  }
+
+  
+
+  .side {
+
+    display: flex;
+
+    align-items: stretch;
+
+  }
+
+  
+
+  .left-container img, .right-container {
+
+    flex: 1;
+
+    max-height: 100%;
+
+  }
