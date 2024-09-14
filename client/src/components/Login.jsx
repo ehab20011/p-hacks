@@ -36,7 +36,7 @@ function Login() {
 
   const handleSignupClick = () => {
     // Navigate to the signup worker page
-    navigate('/signup-worker');
+    navigate('/signup-refugee');
   };
 
   return (

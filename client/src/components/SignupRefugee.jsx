@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import './styles/SignupRefugee.css';
 
@@ -20,7 +19,6 @@ const SignupRefugee = () => {
         console.log('Gender:', gender);
         console.log('Phone Number:', phoneNumber);
         console.log('ID Number:', idNumber);
-
     };
 
     return (
