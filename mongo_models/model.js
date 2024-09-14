@@ -34,6 +34,6 @@ const workerSchema = new mongoose.Schema({
 
 // Export both models
 module.exports = {
-  Refugee: mongoose.model('Refugee', refugeeSchema),
+  Refugee: mongoose.model('Refugee', refugeeSchema, 'Refugees'),
   Worker: mongoose.model('Worker', workerSchema)
 };
