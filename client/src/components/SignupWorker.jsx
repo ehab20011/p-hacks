@@ -1,56 +1,57 @@
-import React, { useState } from 'react';
-import './styles/SignupWorker.css';
+import React, { useState } from "react";
+import "./styles/SignupWorker.css";
+import NavBar from "./NavBar";
 
 const SignupWorker = () => {
-    // Worker States
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState(''); 
-    const [password, setPassword] = useState(''); 
-    const [jobTitle, setJobTitle] = useState('');
-    const [camp, setCamp] = useState('');
-    const [language, setLanguage] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [gender, setGender] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [idNumber, setIdNumber] = useState('');
+  // Worker States
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [camp, setCamp] = useState("");
+  const [language, setLanguage] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [idNumber, setIdNumber] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const userData = {
-            name: firstName + ' ' + lastName,  // Concatenate first and last name
-            email,
-            password,
-            role: jobTitle,
-            encampment: camp,
-            language,
-            dateOfBirth,
-            gender,
-            phoneNumber,
-            idNumber,
-        };
-
-        try {
-            const response = await fetch('http://localhost:5000/api/signup/worker', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert('Worker signed up successfully!');
-            } else {
-                alert(`Error: ${result.message}`);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to sign up the worker');
-        }
+    const userData = {
+      name: firstName + " " + lastName, // Concatenate first and last name
+      email,
+      password,
+      role: jobTitle,
+      encampment: camp,
+      language,
+      dateOfBirth,
+      gender,
+      phoneNumber,
+      idNumber,
     };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/signup/worker", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Worker signed up successfully!");
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to sign up the worker");
+    }
+  };
 
     return (
         <div className="signup-worker-container">
@@ -165,10 +166,10 @@ const SignupWorker = () => {
                     </div>
                 </div>
 
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
-    );
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  );
 };
 
 export default SignupWorker;
