@@ -47,7 +47,7 @@ body {
 .right-container {
   width: 50%;
   padding: 30px;
-  background-color: #ffffff; /* White background for contrast */
+  background-color: transparent; /* White background for contrast */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -132,6 +132,7 @@ body {
 
 /* Button styling */
 .btn-login {
+  margin-top: 20px;
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -156,6 +157,7 @@ body {
 .btn-signup {
   width: 100%;
   padding: 10px;
+  margin-top: 20px;
   background-color: #28a745;
   color: #fff;
   border: none;
