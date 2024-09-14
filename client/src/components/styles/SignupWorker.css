@@ -1,45 +1,74 @@
-/* src/components/styles/SignupWorker.css */
 
 .signup-worker-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    border-radius: 16px;
+    background-color: #F8F9F9;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .signup-worker-container h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: blue;
 }
 
-.signup-worker-container form div {
-    margin-bottom: 15px;
+.signup-worker-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.signup-worker-column {
+    width: 48%; 
+    display: flex;
+    flex-direction: column;
+}
+.signup-worker-column > div {
+    margin-bottom: 30px;
 }
 
 .signup-worker-container label {
-    display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
+    color: #333;
 }
 
-.signup-worker-container input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+.signup-worker-container input,
+.signup-worker-container select {
+    padding: 12px; 
+    margin-top: 5px; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%; 
+}
+
+.signup-worker-container input:focus,
+.signup-worker-container select:focus {
+    border-color: blue;
 }
 
 .signup-worker-container button {
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
+    padding: 12px;
+    background-color: blue;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
 }
 
 .signup-worker-container button:hover {
-    background-color: #0056b3;
+    background-color: navy;
 }
