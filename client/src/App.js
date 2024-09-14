@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import SignupWorker from './components/SignupWorker';
+import SignupRefugee from './components/SignupRefugee';
 import RefugeePage from './components/RefugeePage';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/login" />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup-worker" element={<SignupWorker />} />
+                <Route path="/signup-refugee" element={<SignupRefugee />} />
                 <Route path="/refugeepage" element={<RefugeePage />} />
             </Routes>
         </Router>

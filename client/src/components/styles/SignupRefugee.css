@@ -1,0 +1,68 @@
+.signup-refugee-container {
+    max-width: 900px; 
+    margin: 50px auto; 
+    padding: 40px; 
+    border: 1px solid #ccc; 
+    border-radius: 16px; 
+    background-color: #F8F9F9;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+}
+
+.signup-refugee-container h2 {
+    text-align: center;
+    margin-bottom: 30px; 
+    font-size: 2rem; 
+    color: blue; 
+}
+
+.signup-refugee-container form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px; 
+}
+
+.signup-refugee-container form > div {
+    width: 48%; 
+    margin-bottom: 30px; 
+}
+
+.signup-refugee-container label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.signup-refugee-container input,
+.signup-refugee-container select {
+    padding: 12px; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.signup-refugee-container input:focus,
+.signup-refugee-container select:focus {
+    border-color: blue;
+}
+
+.signup-refugee-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.signup-refugee-container button:hover {
+    background-color: navy;
+}
