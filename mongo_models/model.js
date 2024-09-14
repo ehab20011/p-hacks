@@ -13,7 +13,8 @@ const refugeeSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-// Export the model with the correct collection name
+// No more password hashing before saving
+
 const RefuModel = mongoose.model('Refugee', refugeeSchema, 'Refugees');
 
 module.exports = RefuModel;

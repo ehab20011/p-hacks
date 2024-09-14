@@ -10,26 +10,41 @@ const SignupWorker = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [jobTitle, setJobTitle] = useState('');
     const [idNumber, setIdNumber] = useState('');
+    const [email, setEmail] = useState(''); // Add email state
+    const [password, setPassword] = useState(''); // Add password state
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Add password matching logic
-        /*if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }*/
 
-        // For now, just consoling it
-        console.log('First Name:', firstName);
-        console.log('Last Name:', lastName);
-        console.log('Camp:', camp);
-        console.log('Date of Birth:', dateOfBirth);
-        console.log('Gender:', gender);
-        console.log('Phone Number:', phoneNumber);
-        console.log('Job Title:', jobTitle);
-        console.log('ID Number:', idNumber);
+        const userData = {
+            name: firstName + ' ' + lastName,  // Concatenate first and last name
+            email,
+            password,
+            encampment: camp,
+            role: jobTitle,                    
+            language: 'English',  // You can modify this as per your requirement
+            status: 'active',     // Any default status
+        };
 
-        // We need to send requet to the backend API for registration
+        try {
+            const response = await fetch('http://localhost:5000/api/signup/worker', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('Worker signed up successfully!');
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to sign up the worker');
+        }
     };
 
     return (
@@ -51,6 +66,24 @@ const SignupWorker = () => {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
