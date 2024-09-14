@@ -5,6 +5,7 @@ import SignupWorker from './components/SignupWorker';
 import SignupRefugee from './components/SignupRefugee';
 import RefugeePage from './components/RefugeePage';
 import ChatSystem from './components/ChatSystem';
+import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
 
 function App() {
     return (
@@ -14,8 +15,23 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup-worker" element={<SignupWorker />} />
                 <Route path="/signup-refugee" element={<SignupRefugee />} />
-                <Route path="/refugeepage" element={<RefugeePage />} />
-                <Route path="/chatsystem" element={<ChatSystem/>} />
+
+                <Route
+                  path="/refugeepage"
+                  element={
+                    <PrivateRoute>
+                      <RefugeePage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/chatsystem"
+                  element={
+                    <PrivateRoute>
+                      <ChatSystem />
+                    </PrivateRoute>
+                  }
+                />
             </Routes>
         </Router>
     );

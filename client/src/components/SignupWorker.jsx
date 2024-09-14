@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import './styles/SignupWorker.css';
 
 const SignupWorker = () => {
+    // Worker States
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState(''); // Add email state
+    const [password, setPassword] = useState(''); // Add password state
+    const [jobTitle, setJobTitle] = useState('');
     const [camp, setCamp] = useState('');
+    const [language, setLanguage] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [gender, setGender] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
     const [idNumber, setIdNumber] = useState('');
-    const [email, setEmail] = useState(''); // Add email state
-    const [password, setPassword] = useState(''); // Add password state
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,10 +22,13 @@ const SignupWorker = () => {
             name: firstName + ' ' + lastName,  // Concatenate first and last name
             email,
             password,
+            role: jobTitle,
             encampment: camp,
-            role: jobTitle,                    
-            language: 'English',  // You can modify this as per your requirement
-            status: 'active',     // Any default status
+            language,
+            dateOfBirth,
+            gender,
+            phoneNumber,
+            idNumber,
         };
 
 
@@ -177,7 +182,6 @@ const SignupWorker = () => {
                         <option value="security-personnel">Security Personnel</option>
                     </select>
                 </div>
-                <div>
                     <label>ID Number</label>
                     <input
                         type="text"
