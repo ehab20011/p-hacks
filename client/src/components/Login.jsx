@@ -6,7 +6,7 @@ import bgimg from "./images/login.jpg";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("refugee");
+  const [role, setRole] = useState("refugee"); // 'refugee' or 'employee'
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -22,19 +22,27 @@ function Login() {
         body: JSON.stringify({ email, password, role }),
       });
       
-  
       const data = await response.json();
   
       if (response.ok) {
-        localStorage.setItem('refugeeName', data.refugee.name);
-        navigate('/refugeepage');
+        // Assuming response data has the necessary user info
+        localStorage.setItem('userName', data.name);
+        navigate('/chatsystem'); // Navigate to chatsystem for both roles
       } else {
         setError(data.message);
       }
     } catch (err) {
       setError('Login failed, please try again.');
     }
-  };  
+  };
+
+  const handleSignup = () => {
+    if (role === 'refugee') {
+      navigate('/signup-refugee');
+    } else {
+      navigate('/signup-worker');
+    }
+  };
 
   return (
     <div className="main">
@@ -46,8 +54,8 @@ function Login() {
         <div className="right-container">
           <div className="inner-right">
             <div className="options">
-              <h2>Login</h2>
-              <h2>Sign Up</h2>
+              <h2 className={role === 'refugee' ? 'active' : ''} onClick={() => setRole('refugee')}>Refugee</h2>
+              <h2 className={role === 'employee' ? 'active' : ''} onClick={() => setRole('employee')}>Employee</h2>
             </div>
             <div>
               <form onSubmit={handleLogin}>
@@ -65,36 +73,18 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <div className="choose-role">
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="refugee"
-                      checked={role === "refugee"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    Refugee
-                  </label>
-                  <br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="employee"
-                      checked={role === "employee"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    Employee
-                  </label>
-                </div>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <a href="#" className="forgot-password">
                   Forgot Password?
                 </a>
-                <button type="submit" className="btn-login">
-                  Login
-                </button>
+                <div className="button-container">
+                  <button type="submit" className="btn-login">
+                    Login
+                  </button>
+                  <button type="button" className="btn-signup" onClick={handleSignup}>
+                    Sign Up
+                  </button>
+                </div>
               </form>
             </div>
           </div>
