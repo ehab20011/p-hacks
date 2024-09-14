@@ -138,3 +138,15 @@ body {
   padding-right: 60px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 }
+
+
+.options h2 {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.options h2.active {
+  font-weight: bold;
+  border-bottom: 2px solid #000; /* or any other styling to indicate active state */
+}
