@@ -18,13 +18,46 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
 
+// Refugee signup route
+app.post('/api/signup/Refugee', async (req, res) => {
+  const { name, email, password, age, gender, familyMembers, encampment, language, dateOfBirth, phoneNumber } = req.body;
+
+  try {
+    // Check if the refugee already exists by email
+    const existingRefugee = await Refugee.findOne({ email });
+    if (existingRefugee) {
+      return res.status(400).json({ message: 'Email is already registered' });
+    }
+
+    // Create a new refugee document
+    const newRefugee = new Refugee({
+      name,
+      email,
+      password,  // Remember to hash the password later using bcrypt
+      age,
+      gender,
+      familyMembers,
+      encampment,
+      language,
+      dateOfBirth,
+      phoneNumber
+    });
+
+    // Save refugee to the database
+    await newRefugee.save();
+    res.status(201).json({ message: 'Refugee registered successfully', refugee: newRefugee });
+  } catch (error) {
+    console.error('Error registering refugee:', error);
+    res.status(500).json({ message: 'Server error during refugee registration', error });
+  }
+});
+
 // POST API route to handle login
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
   console.log(`Login attempt with email: ${email} Role: ${role}`);
 
   try {
-    // Ensure you're using the correct model for refugee
     const refugee = await Refugee.findOne({ email: email.trim() });
 
     if (!refugee) {
@@ -53,6 +86,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Ensure all API routes are defined before this route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });

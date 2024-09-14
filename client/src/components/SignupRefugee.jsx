@@ -18,42 +18,40 @@ const SignupRefugee = () => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Creating the user data object to match refugeeSchema
+      
         const refugeeData = {
-            name: firstName + ' ' + lastName, // Concatenate first and last name
-            email,
-            password,
-            age: Number(age),                // Convert age to number
-            gender,
-            familyMembers: Number(familyMembers),  // Convert familyMembers to number
-            encampment: camp,                // Encampment field
-            language,
-            dateOfBirth,
-            phoneNumber
+          name: firstName + ' ' + lastName,
+          email,
+          password,
+          age: Number(age),
+          gender,
+          familyMembers: Number(familyMembers),
+          encampment: camp,
+          language,
+          dateOfBirth,
+          phoneNumber
         };
-
+      
         try {
-            // Sending a POST request to the backend
-            const response = await fetch('http://localhost:5000/api/signup/refugee', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(refugeeData), // Send the refugee data
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert('Refugee signed up successfully!');
-            } else {
-                alert(`Error: ${result.message}`);
-            }
+          const response = await fetch('http://localhost:5000/api/signup/refugee', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(refugeeData),
+          });
+      
+          const result = await response.json();
+          if (response.ok) {
+            alert('Refugee signed up successfully!');
+          } else {
+            alert(`Error: ${result.message}`);
+          }
         } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to sign up the refugee');
+          console.error('Error:', error);
+          alert('Failed to sign up the refugee');
         }
-    };
+      };      
 
     return (
         <div className="signup-refugee-container">
