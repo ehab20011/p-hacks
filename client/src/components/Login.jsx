@@ -11,7 +11,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
@@ -20,9 +20,10 @@ function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+      
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         localStorage.setItem('refugeeName', data.refugee.name);
         navigate('/refugeepage');
@@ -32,7 +33,7 @@ function Login() {
     } catch (err) {
       setError('Login failed, please try again.');
     }
-  };
+  };  
 
   const handleSignupClick = () => {
     // Navigate to the signup worker page
