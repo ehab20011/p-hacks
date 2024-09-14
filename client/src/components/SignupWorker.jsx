@@ -189,6 +189,7 @@ const SignupWorker = () => {
                         onChange={(e) => setIdNumber(e.target.value)}
                         required
                     />
+                </div>
 
                 {/* Right Column */}
                 <div className="signup-worker-column">

@@ -6,6 +6,8 @@ import bgimg from "./images/login.jpg";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("refugee"); // 'refugee' or 'employee'
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // New: loading state
   const navigate = useNavigate();
@@ -24,10 +26,14 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-
       const data = await response.json();
 
       if (response.ok) {
+        // Assuming response data has the necessary user info
+        localStorage.setItem('userName', data.name);
+        navigate('/chatsystem'); // Navigate to chatsystem for both roles
+
+        
         if (role === "refugee") {
           console.log('Refugee logged in:', data.refugee.name);
           localStorage.setItem('refugeeName', data.refugee.name); // Store refugee name
@@ -37,6 +43,7 @@ function Login() {
           localStorage.setItem('employeeName', data.employee.name); // Store employee name
           navigate('/employeepage'); // Redirect to employee page
         }
+ 
       } else {
         console.error('Error from server:', data.message);
         setError(data.message); // Display error message from the server
@@ -49,6 +56,12 @@ function Login() {
     }
   };
 
+  const handleSignup = () => {
+    if (role === 'refugee') {
+      navigate('/signup-refugee');
+    } else {
+      navigate('/signup-worker');
+    }
 
   const handleSignupClick = () => {
     // Navigate to the signup worker page
@@ -65,8 +78,8 @@ function Login() {
         <div className="right-container">
           <div className="inner-right">
             <div className="options">
-              <h2>Login</h2>
-              <h2>Sign Up</h2>
+              <h2 className={role === 'refugee' ? 'active' : ''} onClick={() => setRole('refugee')}>Refugee</h2>
+              <h2 className={role === 'employee' ? 'active' : ''} onClick={() => setRole('employee')}>Employee</h2>
             </div>
             <div>
               <form onSubmit={handleLogin}>
@@ -85,6 +98,18 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
+                </div>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <a href="#" className="forgot-password">
+                  Forgot Password?
+                </a>
+                <div className="button-container">
+                  <button type="submit" className="btn-login">
+                    Login
+                  </button>
+                  <button type="button" className="btn-signup" onClick={handleSignup}>
+                    Sign Up
+                  </button>
                 </div>
                 <div className="choose-role">
                   <label>
