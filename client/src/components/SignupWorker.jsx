@@ -177,7 +177,6 @@ const SignupWorker = () => {
                         <option value="security-personnel">Security Personnel</option>
                     </select>
                 </div>
-                <div>
                     <label>ID Number</label>
                     <input
                         type="text"
