@@ -117,15 +117,6 @@ const SignupRefugee = () => {
                         required
                     />
                 </div>
-                <div>
-                    <label>ID Number</label>
-                    <input
-                        type="text"
-                        value={idNumber}
-                        onChange={(e) => setIdNumber(e.target.value)}
-                        required
-                    />
-                </div>
                 <button type="submit">Sign Up</button>
             </form>
         </div>
