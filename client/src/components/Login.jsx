@@ -6,27 +6,27 @@ import bgimg from "./images/login.jpg";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("refugee");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // New: loading state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
     setLoading(true); 
     setError(""); 
-  
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ email, password }),
       });
-  
-      const data = await response.json(); // Make sure to get the response data here
-  
+
+
+      const data = await response.json();
+
       if (response.ok) {
         if (role === "refugee") {
           console.log('Refugee logged in:', data.refugee.name);
@@ -48,8 +48,12 @@ function Login() {
       setLoading(false); // Stop loading once the request finishes
     }
   };
-  
-  
+
+
+  const handleSignupClick = () => {
+    // Navigate to the signup worker page
+    navigate('/signup-worker');
+  };
 
   return (
     <div className="main">
@@ -114,6 +118,34 @@ function Login() {
                 </button>
               </form>
             </div>
+          <div className="options">
+            <h2>Login</h2>
+            <h2 onClick={handleSignupClick} style={{ cursor: 'pointer' }}>Sign Up</h2>
+          </div>
+          <div>
+            <form onSubmit={handleLogin}>
+              <div className="user-input">
+                <input
+                  type="text"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
+              <button type="button" className="forgot-password">
+                Forgot Password?
+              </button>
+              <button type="submit" className="btn-login">
+                Login
+              </button>
+            </form>
           </div>
         </div>
       </div>

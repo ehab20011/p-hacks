@@ -3,7 +3,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const bcrypt = require('bcrypt');
 
 // Load environment variables from the .env file
 dotenv.config();
