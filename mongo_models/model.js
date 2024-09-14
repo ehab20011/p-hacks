@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Refugee Schema
 const refugeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true }, // Email 
@@ -14,6 +15,10 @@ const refugeeSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Explicitly specify the collection name as 'Refugees'
+const Refugee = mongoose.model('Refugee', refugeeSchema, 'Refugees');
+
+// Worker Schema (for workers)
 const workerSchema = new mongoose.Schema({
   name: { type: String, required: true },           // First and last name combined
   email: { type: String, required: true }, // Email must be unique
@@ -31,7 +36,4 @@ const workerSchema = new mongoose.Schema({
 // No more password hashing before saving
 
 // Export both models
-module.exports = {
-  Refugee: mongoose.model('Refugee', refugeeSchema),
-  Worker: mongoose.model('Worker', workerSchema)
-};
+module.exports = { Refugee, Worker };
