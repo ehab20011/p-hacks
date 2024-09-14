@@ -6,6 +6,8 @@ import SignupRefugee from './components/SignupRefugee';
 import RefugeePage from './components/RefugeePage';
 import ChatSystem from './components/ChatSystem';
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
+import ForgotPassword from './components/ForgotPassword';
+
 
 function App() {
     return (
@@ -15,6 +17,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup-worker" element={<SignupWorker />} />
                 <Route path="/signup-refugee" element={<SignupRefugee />} />
+                <Route path="/forgotpw" element={<ForgotPassword/>}/>
 
                 <Route
                   path="/refugeepage"

@@ -25,7 +25,6 @@ const ChatSystem = () => {
     setChats(updatedChats);
     setMessageInput("");
   };
-
   const handleChatClick = (chat) => {
     setSelectedChat(chat);
   };
@@ -78,5 +77,4 @@ const ChatSystem = () => {
     </div>
   );
 };
-
 export default ChatSystem;

@@ -165,9 +165,9 @@ const SignupWorker = () => {
                         />
                     </div>
                 </div>
-
-        <button type="submit">Sign Up</button>
-      </form>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
     </div>
   );
 };
