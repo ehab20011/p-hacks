@@ -2,20 +2,21 @@ const mongoose = require('mongoose');
 
 const refugeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
+  email: { type: String, required: true }, // Email 
+  password: { type: String, required: true }, // Password should be hashed before saving (smd gpt)
   age: Number,
   gender: String,
   familyMembers: Number,
   encampment: String,
   language: String,
-  status: String,
-  createdAt: { type: Date, default: Date.now } 
+  dateOfBirth: Date,
+  phoneNumber: String,
+  createdAt: { type: Date, default: Date.now }
 });
 
 const workerSchema = new mongoose.Schema({
   name: { type: String, required: true },           // First and last name combined
-  email: { type: String, required: true, unique: true }, // Email must be unique
+  email: { type: String, required: true }, // Email must be unique
   password: { type: String, required: true },       // Hashed password (remember to hash it before saving)
   role: { type: String, required: true },           // Job title (doctor, nurse, etc.)
   encampment: { type: String, required: true },     // Camp location or reference
