@@ -168,8 +168,7 @@ const SignupWorker = () => {
           <button type="submit">Sign Up</button>
         </form>
       </div>
-    </div>
-  );
+    );
 };
 
 export default SignupWorker;
