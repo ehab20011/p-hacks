@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 // Refugee Schema
 const refugeeSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true }, // Email 
-  password: { type: String, required: true }, // Password should be hashed before saving (smd gpt)
+  name: String,
+  email:  String, // Email 
+  password: String, // Password should be hashed before saving (smd gpt)
   age: Number,
   gender: String,
   familyMembers: Number,
@@ -14,9 +14,6 @@ const refugeeSchema = new mongoose.Schema({
   phoneNumber: String,
   createdAt: { type: Date, default: Date.now }
 });
-
-// Explicitly specify the collection name as 'Refugees'
-const Refugee = mongoose.model('Refugee', refugeeSchema, 'Refugees');
 
 // Worker Schema (for workers)
 const workerSchema = new mongoose.Schema({
@@ -35,7 +32,6 @@ const workerSchema = new mongoose.Schema({
 
 // No more password hashing before saving
 
-// Export both models
 // Export both models
 module.exports = {
   Refugee: mongoose.model('Refugee', refugeeSchema),
