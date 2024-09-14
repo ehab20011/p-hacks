@@ -2,24 +2,56 @@ import React, { useState } from 'react';
 import './styles/SignupRefugee.css';
 
 const SignupRefugee = () => {
+    // Refugee States
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [camp, setCamp] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [gender, setGender] = useState('');
+    const [email, setEmail] = useState('');           // Email field
+    const [password, setPassword] = useState('');     // Password field
+    const [age, setAge] = useState('');           // Age Field
+    const [gender, setGender] = useState('');           // Email field
+    const [familyMembers, setFamilyMembers] = useState(''); // Number of family members
+    const [camp, setCamp] = useState('');             // Encampment
+    const [language, setLanguage] = useState('');     // Language
+    const [dateOfBirth, setDateOfBirth] = useState(''); 
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [idNumber, setIdNumber] = useState('');
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('First Name:', firstName);
-        console.log('Last Name:', lastName);
-        console.log('Camp:', camp);
-        console.log('Date of Birth:', dateOfBirth);
-        console.log('Gender:', gender);
-        console.log('Phone Number:', phoneNumber);
-        console.log('ID Number:', idNumber);
-    };
+      
+        const refugeeData = {
+          name: firstName + ' ' + lastName,
+          email,
+          password,
+          age: Number(age),
+          gender,
+          familyMembers: Number(familyMembers),
+          encampment: camp,
+          language,
+          dateOfBirth,
+          phoneNumber
+        };
+      
+        try {
+          const response = await fetch('http://localhost:5000/api/signup/refugee', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(refugeeData),
+          });
+      
+          const result = await response.json();
+          if (response.ok) {
+            alert('Refugee signed up successfully!');
+          } else {
+            alert(`Error: ${result.message}`);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to sign up the refugee');
+        }
+      };      
 
     return (
         <div className="signup-refugee-container">
@@ -80,15 +112,6 @@ const SignupRefugee = () => {
                         type="tel"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>ID Number</label>
-                    <input
-                        type="text"
-                        value={idNumber}
-                        onChange={(e) => setIdNumber(e.target.value)}
                         required
                     />
                 </div>

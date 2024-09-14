@@ -33,11 +33,11 @@ function Login() {
         if (role === "refugee") {
           console.log("Refugee logged in:", data.refugee.name);
           localStorage.setItem("refugeeName", data.refugee.name);
-          navigate("/chatsystem"); // Redirect to chatsystem instead of refugeepage
+          navigate("/chatsystem"); // Redirect both to chatsystem
         } else if (role === "employee") {
           console.log("Employee logged in:", data.employee.name);
           localStorage.setItem("employeeName", data.employee.name);
-          navigate("/chatsystem"); // Redirect to chatsystem for employees as well
+          navigate("/chatsystem"); // Redirect both to chatsystem
         }
       } else {
         console.error("Error from server:", data.message);
@@ -51,83 +51,8 @@ function Login() {
     }
   };
 
-  const handleSignup = () => {
-    if (role === "refugee") {
-      navigate("/signup-refugee");
-    } else {
-      navigate("/signup-worker");
-    }
-  };
-
   return (
-    <div className="main">
-      {/* Including NavBar component at the top */}
-      <NavBar />
-      
-      <div className="side">
-        <div className="left-container">
-          <img src={bgimg} alt="Background" />
-        </div>
-        <div className="right-container">
-          <div className="inner-right">
-            <div className="options">
-              <h2
-                className={role === "refugee" ? "active" : ""}
-                onClick={() => setRole("refugee")}
-              >
-                Refugee
-              </h2>
-              <h2
-                className={role === "employee" ? "active" : ""}
-                onClick={() => setRole("employee")}
-              >
-                Employee
-              </h2>
-            </div>
-            <div>
-              <form onSubmit={handleLogin}>
-                <div className="user-input">
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <a href="#" className="forgot-password">
-                  Forgot Password?
-                </a>
-                <div className="button-container">
-                  <button
-                    type="submit"
-                    className="btn-login"
-                    disabled={loading}
-                  >
-                    {loading ? "Logging in..." : "Login"}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-signup"
-                    onClick={handleSignup}
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    // your return JSX here
   );
 }
 

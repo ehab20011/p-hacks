@@ -54,7 +54,7 @@ const SignupWorker = () => {
 
     return (
         <div className="signup-worker-container">
-            <h2>Refugee Worker Signup</h2>
+            <h2>Employee Signup</h2>
             <form onSubmit={handleSubmit} className="signup-worker-form">
                 <div className="signup-worker-column">
                     <div>
