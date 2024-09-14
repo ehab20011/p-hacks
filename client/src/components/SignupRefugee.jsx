@@ -16,6 +16,7 @@ const SignupRefugee = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+<<<<<<< HEAD
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +34,45 @@ const SignupRefugee = () => {
       dateOfBirth,
       phoneNumber,
     };
+=======
+    // Handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        const refugeeData = {
+          name: firstName + ' ' + lastName,
+          email,
+          password,
+          age: Number(age),
+          gender,
+          familyMembers: Number(familyMembers),
+          encampment: camp,
+          language,
+          dateOfBirth,
+          phoneNumber
+        };
+      
+        try {
+          const response = await fetch('http://localhost:5000/api/signup/refugee', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(refugeeData),
+          });
+      
+          const result = await response.json();
+          if (response.ok) {
+            alert('Refugee signed up successfully!');
+          } else {
+            alert(`Error: ${result.message}`);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to sign up the refugee');
+        }
+      };      
+>>>>>>> a30fecab1e3c7ea82ec34847e0764d81407c95fc
 
     try {
       // Sending a POST request to the backend

@@ -1,60 +1,72 @@
 .signup-refugee-container {
-    max-width: 900px; 
-    margin: 50px auto; 
-    padding: 40px; 
-    border: 1px solid #ccc; 
-    border-radius: 16px; 
-    background-color: #F8F9F9;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid #FFD300;
+    backdrop-filter: blur(10px); 
+}
+
+body {
+background: linear-gradient(135deg, #FFF9E5 0%, #FFEB99 50%, #FFF9E5 100%);    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .signup-refugee-container h2 {
     text-align: center;
-    margin-bottom: 30px; 
-    font-size: 2rem; 
-    color: blue; 
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #333;
+    border-bottom: 2px solid #FFD300;
+    padding-bottom: 10px;
 }
 
 .signup-refugee-container form {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .signup-refugee-container form > div {
-    width: 48%; 
-    margin-bottom: 30px; 
+    width: 48%;
+    margin-bottom: 30px;
 }
 
 .signup-refugee-container label {
     margin-bottom: 8px;
     font-weight: bold;
-    color: #333;
+    color: #333; 
 }
 
 .signup-refugee-container input,
 .signup-refugee-container select {
-    padding: 12px; 
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 2px solid #FFD300;
     border-radius: 8px;
     outline: none;
     color: #333;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
+    background-color: #FFFFFF;
 }
 
 .signup-refugee-container input:focus,
 .signup-refugee-container select:focus {
-    border-color: blue;
+    border-color: #333; 
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
 .signup-refugee-container button {
     width: 100%;
     padding: 12px;
-    background-color: blue;
-    color: white;
+    background-color: #FFD300; 
+    color: #333;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -64,5 +76,5 @@
 }
 
 .signup-refugee-container button:hover {
-    background-color: navy;
+    background-color: #FFC300;
 }
