@@ -4,6 +4,7 @@ import Login from './components/Login';
 import SignupWorker from './components/SignupWorker';
 import RefugeePage from './components/RefugeePage';
 import ChatSystem from './components/ChatSystem';
+import WorkerChatSystem from './components/WorkerChatSystem'
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/signup-worker" element={<SignupWorker />} />
                 <Route path="/refugeepage" element={<RefugeePage />} />
                 <Route path="/chatsystem" element={<ChatSystem/>} />
+                <Route path="/workerchatsystem" element={<WorkerChatSystem/>}/>
             </Routes>
         </Router>
     );
