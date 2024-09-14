@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+# RefuConnect
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Goal 
+As of May 26th 2024, New York City alone had over 65,600 people seeking asylum in encampments & shelters. Over 200,000 as well since just 2022. 
 
-## Available Scripts
+In the US during the 43 years of the modern resettlement program, an average of 73,300 refugees have entered the US every year. 
+That's over 3.1 Million Refugees! 
 
-In the project directory, you can run:
+This influx of immigration, especially over the past 2-3 years has led to an overflow & collapse of our immigration system. 
 
-### `npm start`
+Keeping the information about these refugees is not only an issue of its own but keeping contstant contact with them when they need help is especially difficult. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Can you imagine coming to a country you have no idea about, being put in a shelter or encampment where you can only rely on the others to help you?
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+At **RefuConnect** our goal is to help refugees/asylum seekers connect & stay connected with their aids at the encampements they're staying in. 
 
-### `npm test`
+Refugees will be able to sign up through the web app, select the encampment they're in & have direct connection to any aids & security available. This will allow for a streamlined access point for all aids to give help wherever they can & help those who need it most. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This will also allow for any quick connection to security so if anything gets out of hand, they can find a security guard available quickly.
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- User-friendly web application for refugees and asylum seekers
+- Encampment selection and registration
+- Direct communication channel with aid workers and security personnel
+- Multi-language support for better accessibility
+- Real-time updates on available resources and services
+- Emergency alert system for urgent situations
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Technology Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Frontend: [Your chosen frontend framework, e.g., React, Vue.js]
+- Backend: [Your chosen backend technology, e.g., Node.js, Django]
+- Database: [Your chosen database, e.g., MongoDB, PostgreSQL]
+- Authentication: [Your chosen auth method, e.g., JWT, OAuth]
+- Hosting: [Your chosen hosting platform, e.g., AWS, Heroku]
 
-### `npm run eject`
+## Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+[Instructions on how to set up and run the project locally]
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Contributing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+We welcome contributions from the community! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and suggest improvements.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## License
 
-## Learn More
+This project is licensed under the [Your chosen license, e.g., MIT License] - see the [LICENSE.md](LICENSE.md) file for details.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Contact
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+For any questions or concerns, please reach out to [Your contact information or project email].
 
-### Code Splitting
+## Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [List any organizations, individuals, or resources that have been helpful in the development of RefuConnect]
