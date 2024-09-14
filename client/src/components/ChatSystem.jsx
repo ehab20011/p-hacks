@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./styles/ChatSystem.css";
+import NavBar from "./NavBar";
 
 const ChatSystem = () => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -31,6 +32,7 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system">
+      <NavBar />
       <div className="chat-list">
         {chats.map((chat) => (
           <div

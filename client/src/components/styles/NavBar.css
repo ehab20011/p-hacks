@@ -8,7 +8,7 @@ html, body {
   .navbar {
     width: 100%;
     padding: 15px 0;
-    background-color: #1e2a38;
+    background-color: #ffd300;
     position: fixed;
     top: 0;
     left: 0;
@@ -62,7 +62,7 @@ html, body {
   .navbar-login {
     padding: 8px 20px;
     border-radius: 25px;
-    background-color: #25d366;
+    background-color: #feb603;
     color: #ffffff;
     font-weight: 600;
     transition: background-color 0.3s ease;
