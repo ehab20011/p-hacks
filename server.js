@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
 
-// Refugee signup route
+// POST Refugee signup route
 app.post('/api/signup/Refugee', async (req, res) => {
   const { name, email, password, age, gender, familyMembers, encampment, language, dateOfBirth, phoneNumber } = req.body;
 
@@ -49,6 +49,40 @@ app.post('/api/signup/Refugee', async (req, res) => {
   } catch (error) {
     console.error('Error registering refugee:', error);
     res.status(500).json({ message: 'Server error during refugee registration', error });
+  }
+});
+
+// POST Worker signup route
+app.post('/api/signup/worker', async (req, res) => {
+  const { name, email, password, role, encampment, language, dateOfBirth, gender, phoneNumber, idNumber } = req.body;
+
+  try {
+    // Check if the worker already exists by email
+    const existingWorker = await Worker.findOne({ email });
+    if (existingWorker) {
+      return res.status(400).json({ message: 'Email is already registered' });
+    }
+
+    // Create a new worker document
+    const newWorker = new Worker({
+      name,
+      email,
+      password,  // Remember to hash the password later using bcrypt
+      role,
+      encampment,
+      language,
+      dateOfBirth,
+      gender,
+      phoneNumber,
+      idNumber
+    });
+
+    // Save worker to the database
+    await newWorker.save();
+    res.status(201).json({ message: 'Worker registered successfully', worker: newWorker });
+  } catch (error) {
+    console.error('Error registering worker:', error);
+    res.status(500).json({ message: 'Server error during worker registration', error });
   }
 });
 
