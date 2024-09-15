@@ -15,15 +15,15 @@ const ChatSystem = () => {
     const userName = localStorage.getItem("userName");
     const userRole = localStorage.getItem("userRole");
     const userId = localStorage.getItem("userId"); // Ensure this is defined
-  
+
     if (userId && userName && userRole) {
       setUser({ id: userId, name: userName, role: userRole });
     } else {
       console.error("User data is missing in localStorage");
     }
-  
+
     socketRef.current = new WebSocket('ws://localhost:5000');
-  
+
     socketRef.current.onopen = () => {
       console.log("Connected to WebSocket");
       socketRef.current.send(
@@ -33,11 +33,11 @@ const ChatSystem = () => {
         })
       );
     };
-  
+
     socketRef.current.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("Received message:", message);
-  
+
       switch (message.type) {
         case "active_users":
           setActiveUsers(message.payload.filter((u) => u.id !== userId));
@@ -47,15 +47,15 @@ const ChatSystem = () => {
           break;
       }
     };
-  
+
     socketRef.current.onclose = () => {
       console.log("Disconnected from WebSocket");
     };
-  
+
     return () => {
       socketRef.current.close();
     };
-  }, []);  
+  }, []);
 
   const handleIncomingMessage = (message) => {
     setChats((prevChats) => {
@@ -69,7 +69,7 @@ const ChatSystem = () => {
 
   const handleChatClick = (userId) => {
     setSelectedChat(userId);
-  
+
     fetch('/api/getMessages', {
       method: 'POST',
       headers: {
@@ -88,9 +88,9 @@ const ChatSystem = () => {
       })
       .catch(err => console.error('Error fetching messages:', err));
   };
-  
-  
-  
+
+
+
 
   const handleFileChange = (e) => {
     setFileInput(e.target.files[0]);
@@ -98,12 +98,12 @@ const ChatSystem = () => {
 
   const handleSend = () => {
     if (!selectedChat || (messageInput.trim() === "" && !fileInput)) return;
-  
+
     if (!user || !user.id) {
       console.error("User is not defined");
       return;
     }
- 
+
     const newMessage = {
       type: "send_message",
       payload: {
@@ -159,95 +159,94 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system-container">
-    <div className="chat-system">
-      <div className="chat-container">
-        <div className="active-users">
-          <div className="active-users-header">
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
-            <h2>Inbox</h2>
-          </div>
-          {activeUsers.map((user) => (
-            <div
-              key={user.id}
-              className={`user-item ${selectedChat === user.id ? "active" : ""}`}
-              onClick={() => handleChatClick(user.id)}
-            >
-              {user.name} ({user.role})
+      <div className="chat-system">
+        <div className="chat-container">
+          <div className="active-users">
+            <div className="active-users-header">
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+              <h2>Inbox</h2>
             </div>
-          ))}
-        </div>
-        <div className="chat-window">
-          {selectedChat ? (
-            <>
-              <div className="chat-messages">
-                {chats[selectedChat]?.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`chat-message ${
-                      msg.senderId === user.id ? "sent" : "received"
-                    }`}
-                  >
-                    <div className="message-sender">
-                      {msg.senderId === user.id
-                        ? "You"
-                        : activeUsers.find((u) => u.id === msg.senderId)?.name}
-                    </div>
-                    <div className="message-text">{msg.text}</div>
-                  </div>
-                ))}
-              </div>*/}
-              <div className="chat-messages">
-  {Array.isArray(chats[selectedChat]) && chats[selectedChat].length > 0 ? (
-    chats[selectedChat].map((msg, index) => (
-      <div
-        key={index}
-        className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
-      >
-        <div className="message-sender">
-          {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
-        </div>
-        <div className="message-text">{msg.text}</div>
-      </div>
-    ))
-  ) : (
-    <div>No messages yet</div>
-  )}
-</div>
-
-              <div className="chat-input-container">
-                <input
-                  type="text"
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  placeholder="Type a message..."
-                  className="chat-input"
-                />
-
-                <input
-                  type="file"
-                  id="fileInput"
-                  onChange={handleFileChange}
-                  className="chat-file-input-hidden"
-                />
-                <label htmlFor="fileInput" className="chat-file-input-label">
-                  <i className="fas fa-paperclip"></i>
-                </label>
-
-                <button onClick={handleSend} className="chat-send-button">
-                  Send
-                </button>
+            {activeUsers.map((user) => (
+              <div
+                key={user.id}
+                className={`user-item ${selectedChat === user.id ? "active" : ""}`}
+                onClick={() => handleChatClick(user.id)}
+              >
+                {user.name} ({user.role})
               </div>
-            </>
-          ) : (
-            <div className="no-chat-selected">
-              Select a user to start messaging
-            </div>
-          )}
+            ))}
+          </div>
+          <div className="chat-window">
+            {selectedChat ? (
+              <>
+                <div className="chat-messages">
+                  {chats[selectedChat]?.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={`chat-message ${msg.senderId === user.id ? "sent" : "received"
+                        }`}
+                    >
+                      <div className="message-sender">
+                        {msg.senderId === user.id
+                          ? "You"
+                          : activeUsers.find((u) => u.id === msg.senderId)?.name}
+                      </div>
+                      <div className="message-text">{msg.text}</div>
+                    </div>
+                  ))}
+                </div>
+                {/*<div className="chat-messages">
+                  {Array.isArray(chats[selectedChat]) && chats[selectedChat].length > 0 ? (
+                    chats[selectedChat].map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
+                      >
+                        <div className="message-sender">
+                          {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
+                        </div>
+                        <div className="message-text">{msg.text}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div>No messages yet</div>
+                  )}
+                </div>*/}
+
+                <div className="chat-input-container">
+                  <input
+                    type="text"
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    placeholder="Type a message..."
+                    className="chat-input"
+                  />
+
+                  <input
+                    type="file"
+                    id="fileInput"
+                    onChange={handleFileChange}
+                    className="chat-file-input-hidden"
+                  />
+                  <label htmlFor="fileInput" className="chat-file-input-label">
+                    <i className="fas fa-paperclip"></i>
+                  </label>
+
+                  <button onClick={handleSend} className="chat-send-button">
+                    Send
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="no-chat-selected">
+                Select a user to start messaging
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
