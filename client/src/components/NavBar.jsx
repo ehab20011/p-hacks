@@ -21,8 +21,8 @@ const NavBar = () => {
           </a>
         </div>
         <nav className="navbar-links right">
-          <a href="#login" className="navbar-login">
-            Sign Up
+          <a href="#one" className="navbar-login">
+            About
           </a>
           <div className="navbar-language">
             <select>

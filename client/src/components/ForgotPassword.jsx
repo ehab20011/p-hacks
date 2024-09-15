@@ -8,27 +8,41 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement your logic to handle password reset
-    setMessage("A reset link has been sent to your email address.");
+    // Handle form submission logic here
+    if (email) {
+      // Simulate an API call or form submission
+      setMessage(
+        "If an account with this email exists, a reset link will be sent."
+      );
+    } else {
+      setMessage("Please enter your email address.");
+    }
   };
 
   return (
     <div>
       <NavBar />
-      <div className="forgot-password-container">
-        <h2>Forgot Password</h2>
-        <form onSubmit={handleSubmit} className="forgot-password-form">
-          <label htmlFor="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button type="submit">Send Reset Link</button>
+      <div className="container">
+        <h2>Forgot Password?</h2>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="emailadd" htmlFor="email">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <button type="submit">Send Reset Link</button>
+          </div>
+          {message && <p className="message">{message}</p>}
         </form>
-        {message && <p className="message">{message}</p>}
       </div>
     </div>
   );
