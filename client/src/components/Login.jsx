@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles/Login.css";
 import bgimg from "./images/login.jpg";
 import NavBar from "./NavBar";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,15 +30,9 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem("userName", data.name);
-        if (role === "refugee") {
-          console.log("Refugee logged in:", data.refugee.name);
-          localStorage.setItem("refugeeName", data.refugee.name);
-          navigate("/refugeepage");
-        } else if (role === "employee") {
-          console.log("Employee logged in:", data.employee.name);
-          localStorage.setItem("employeeName", data.employee.name);
-          navigate("/employeepage");
-        }
+        localStorage.setItem("userRole", role); // Store the role in localStorage
+        console.log(`${role.charAt(0).toUpperCase() + role.slice(1)} logged in:`, data.name);
+        navigate("/chatsystem"); // Redirect all to ChatSystem
       } else {
         console.error("Error from server:", data.message);
         setError(data.message);

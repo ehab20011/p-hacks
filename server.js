@@ -3,12 +3,20 @@ const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 
 dotenv.config();
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }
+});
 app.use(cors());
 
-// Import the models correctly
 const { Refugee, Worker } = require('./mongo_models/model');
 
 app.use(express.json());
@@ -17,6 +25,50 @@ app.use(express.static(path.join(__dirname, 'build')));
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
+
+// Store active users
+const activeUsers = new Map();
+
+io.on('connection', (socket) => {
+  console.log('A user connected with id:', socket.id);
+
+  socket.on('login', async ({ email, role }) => {
+    let user;
+    if (role === 'refugee') {
+      user = await Refugee.findOne({ email });
+    } else if (role === 'worker') {
+      user = await Worker.findOne({ email });
+    }
+
+    if (user) {
+      activeUsers.set(socket.id, { id: user._id, email: user.email, role });
+      socket.emit('login_success', { id: user._id, name: user.name, email: user.email, role });
+      io.emit('user_list', Array.from(activeUsers.values()));
+    } else {
+      socket.emit('login_error', 'User not found');
+    }
+  });
+
+  socket.on('send_message', (data) => {
+    console.log("Message received:", data);
+    const sender = activeUsers.get(socket.id);
+    if (sender) {
+      io.to(data.receiverId).emit('receive_message', {
+        ...data,
+        senderId: sender.id,
+        senderEmail: sender.email,
+        senderRole: sender.role
+      });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected:', socket.id);
+    activeUsers.delete(socket.id);
+    io.emit('user_list', Array.from(activeUsers.values()));
+  });
+});
+
 
 // POST Refugee signup route
 app.post('/api/signup/Refugee', async (req, res) => {
@@ -126,4 +178,4 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+server.listen(port, () => console.log(`Server is running on port ${port}`));
