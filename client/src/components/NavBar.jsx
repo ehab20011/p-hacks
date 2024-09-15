@@ -1,33 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./styles/NavBar.css";
 
 const NavBar = () => {
-  const languages = [
-    "English", "Spanish", "Mandarin", "Hindi", "Arabic", "Portuguese", "Bengali", "Russian", 
-    "Japanese", "Punjabi", "German", "Javanese", "Wu", "Malay", "Telugu", "Vietnamese", 
-    "Korean", "French", "Marathi", "Tamil", "Urdu", "Turkish", "Italian", "Yue (Cantonese)", 
-    "Thai", "Gujarati", "Jin", "Persian", "Polish", "Pashto", "Kannada", "Xiang"
-  ];
-
-  const addCustomStyle = () => {
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = `
-      .goog-te-banner-frame.skiptranslate { display: none !important; }
-      body { top: 0px !important; }
-    `;
-    document.head.appendChild(style);
-  };
-  
-  const loadHandler = () => {
-    window.google.translate.TranslateElement({
-      pageLanguage: 'en',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-      autoDisplay: false
-    }, 'google_translate_element');
-    addCustomStyle();
-  };
-  
+  useEffect(() => {
+    // Ensure the script is only added once
+    if (!window.googleTranslateScriptAdded) {
+      const script = document.createElement('script');
+      script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+      window.googleTranslateScriptAdded = true;
+    }
+  }, []);
 
   return (
     <header className="navbar">
@@ -45,7 +29,6 @@ const NavBar = () => {
             Sign Up
           </a>
           <div className="navbar-language">
-            {/* Google Translate widget placeholder */}
             <div id="google_translate_element"></div>
           </div>
         </nav>
