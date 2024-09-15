@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./styles/Login.css";
 import bgimg from "./images/login.jpg";
 import NavBar from "./NavBar";
@@ -56,6 +56,7 @@ function Login() {
   };
 
   return (
+
     <div>
       <div className="main">
         <NavBar />
