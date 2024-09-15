@@ -7,7 +7,7 @@ import zian from "./images/zian.jpeg";
 
 const About = () => {
   return (
-    <section className="about-container">
+    <section id="about" className="about-container">
       <div className="content">
         <h2>About Us</h2>
         <p>
@@ -23,7 +23,7 @@ const About = () => {
         <div className="team">
           <h3>Meet Our Team</h3>
 
-          <ul class="teamimg">
+          <ul className="teamimg">
             <li>
               <img src={ehab} alt="Team Member 1" />
               <h4>Ehab Abdalla</h4>
@@ -40,7 +40,7 @@ const About = () => {
               <p>Backend</p>
             </li>
             <li>
-              <img src={zian} alt="Team Member 3" />
+              <img src={zian} alt="Team Member 4" />
               <h4>Zian Hassan</h4>
               <p>Frontend</p>
             </li>
