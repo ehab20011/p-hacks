@@ -7,7 +7,7 @@ import zian from "./images/zian.jpeg";
 
 const About = () => {
   return (
-    <section className="about-container">
+    <section id="about" className="about-container">
       <div className="content">
         <h2>About Us</h2>
         <p>
@@ -49,6 +49,7 @@ const About = () => {
               <a href="https://www.linkedin.com/in/mohammed-zian-hassan/" target="_blank" rel="noopener noreferrer">
                 <img src={zian} alt="Zian Hassan" />
               </a>
+
               <h4>Zian Hassan</h4>
               <p>Frontend</p>
             </li>

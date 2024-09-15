@@ -13,6 +13,10 @@ const NavBar = () => {
     }
   }, []);
 
+  const scrollToAbout = () => {
+    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <header className="navbar">
       <div className="navbar-container">
@@ -24,10 +28,12 @@ const NavBar = () => {
           </a>
         </div>
         <nav className="navbar-links right">
-
           <div className="navbar-language">
             <div id="google_translate_element"></div>
           </div>
+          <button className="scroll-about-btn" onClick={scrollToAbout}>
+            About Us
+          </button>
         </nav>
       </div>
     </header>
