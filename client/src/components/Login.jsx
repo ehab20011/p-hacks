@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./styles/Login.css";
 import bgimg from "./images/login.jpg";
 import NavBar from "./NavBar";
@@ -103,9 +103,9 @@ function Login() {
                     />
                   </div>
                   {error && <p style={{ color: "red" }}>{error}</p>}
-                  <a href="#" className="forgot-password">
+                  <Link to="/forgotpw" className="forgot-password">
                     Forgot Password?
-                  </a>
+                  </Link>
                   <div className="button-container">
                     <button
                       type="submit"
