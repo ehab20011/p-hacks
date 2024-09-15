@@ -64,14 +64,22 @@ html, body {
   background: #ffffff;
   overflow: hidden;
 }
-
+/*
 .chat-messages {
   flex: 1;
   padding: 15px;
   overflow-y: auto;
   background: #f9f9f9;
+}*/
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #f9f9f9;
+  display: flex; /* Add this line */
+  flex-direction: column; /* Add this line */
 }
-
+/*
 .chat-message {
   margin-bottom: 15px;
   max-width: 70%;
@@ -79,6 +87,23 @@ html, body {
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
+}*/
+.chat-message {
+  margin-bottom: 15px;
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message.sent {
+  background-color: #dcf8c6; /* Light green for user messages */
+  align-self: flex-end; /* Align user's message to the right */
+}
+
+.chat-message.received {
+  background-color: #ffffff; /* White for received messages */
+  align-self: flex-start; /* Align other person's message to the left */
 }
 
 .chat-message.user {
