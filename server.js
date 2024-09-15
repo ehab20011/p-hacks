@@ -60,15 +60,16 @@ function handleLogin(socket, user) {
 }
 
 function handleSendMessage(message) {
-  const { senderId, receiverId, text } = message;
+  const { senderId, receiverId, text, file } = message;
   const receiverSocket = activeUsers.get(receiverId)?.socket;
   if (receiverSocket && receiverSocket.readyState === WebSocket.OPEN) {
     receiverSocket.send(JSON.stringify({
       type: 'new_message',
-      payload: { senderId, text }
+      payload: { senderId, text, file } // Include the file in the payload if present
     }));
   }
 }
+
 
 function broadcastActiveUsers() {
   const users = Array.from(activeUsers.values()).map(({ id, name, role }) => ({ id, name, role }));
