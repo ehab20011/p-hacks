@@ -8,7 +8,7 @@ const ChatSystem = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState({});
   const [messageInput, setMessageInput] = useState("");
-  const [fileInput, setFileInput] = useState(null); // Added state for file input
+  const [fileInput, setFileInput] = useState(null);
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -82,7 +82,6 @@ const ChatSystem = () => {
       },
     };
 
-    // Optimistically add the message to the chat UI before sending it to the server
     setChats((prevChats) => {
       const updatedChat = prevChats[selectedChat]
         ? [...prevChats[selectedChat], newMessage.payload]
@@ -96,13 +95,11 @@ const ChatSystem = () => {
         newMessage.payload.file = {
           name: fileInput.name,
           type: fileInput.type,
-          data: reader.result, // Base64 encoded file
+          data: reader.result,
         };
 
-        // Send the message with file to the server
         socketRef.current.send(JSON.stringify(newMessage));
 
-        // Optionally handle displaying the message with file immediately
         setChats((prevChats) => {
           const updatedChat = prevChats[selectedChat]
             ? [...prevChats[selectedChat], newMessage.payload]
@@ -110,28 +107,39 @@ const ChatSystem = () => {
           return { ...prevChats, [selectedChat]: updatedChat };
         });
 
-        setFileInput(null); // Reset file input after sending
+        setFileInput(null);
       };
       reader.readAsDataURL(fileInput);
     } else {
-      // Send the text message to the server
       socketRef.current.send(JSON.stringify(newMessage));
     }
 
-    setMessageInput(""); // Clear the input field
+    setMessageInput("");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+    socketRef.current.close();
+    window.location.href = "/login"; // Redirect to login page
   };
 
   return (
+    <div className="chat-system-container">
     <div className="chat-system">
       <div className="chat-container">
         <div className="active-users">
-          <h2>Inbox</h2>
+          <div className="active-users-header">
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+            <h2>Inbox</h2>
+          </div>
           {activeUsers.map((user) => (
             <div
               key={user.id}
-              className={`user-item ${
-                selectedChat === user.id ? "active" : ""
-              }`}
+              className={`user-item ${selectedChat === user.id ? "active" : ""}`}
               onClick={() => handleChatClick(user.id)}
             >
               {user.name} ({user.role})
@@ -190,6 +198,7 @@ const ChatSystem = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

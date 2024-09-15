@@ -256,3 +256,70 @@ body {
     font-size: 0.9rem;
   }
 }
+
+
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .side {
+    flex-direction: column;
+  }
+
+  .left-container, .right-container {
+    align-items: center;
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .side {
+    flex-direction: column;
+  }
+
+  .left-container, .right-container {
+    width: 100%;
+  }
+
+  .left-container img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+  }
+
+  .inner-right {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .options {
+    flex-direction: column;
+  }
+
+  .options h2 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .inner-right {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .user-input input {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .btn-login,
+  .btn-signup {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .forgot-password {
+    font-size: 0.8rem;
+  }
+}
