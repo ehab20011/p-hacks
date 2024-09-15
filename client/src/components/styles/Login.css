@@ -34,7 +34,7 @@ body {
   overflow: hidden;
   position: relative; /* Added for gradient overlay */
   border-radius: 15px; /* Make the container itself rounded */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1)); /* Gradient overlay */
 }
 
