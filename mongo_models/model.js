@@ -32,8 +32,22 @@ const workerSchema = new mongoose.Schema({
 
 // No more password hashing before saving
 
-// Export both models
+// Message Schema
+const messageSchema = new mongoose.Schema({
+  senderId: String,
+  receiverId: String,
+  text: String,
+  file: {
+    name: String,
+    type: String,
+    data: String, // Base64 encoded
+  },
+  createdAt: { type: Date, default: Date.now },
+});
+
 module.exports = {
   Refugee: mongoose.model('Refugee', refugeeSchema, 'Refugees'),
-  Worker: mongoose.model('Worker', workerSchema)
+  Worker: mongoose.model('Worker', workerSchema),
+  Message: mongoose.model('Message', messageSchema, 'Messages')
 };
+
