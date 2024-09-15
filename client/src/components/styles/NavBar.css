@@ -21,7 +21,7 @@ html, body {
   position: relative;
   display: inline-block; /* Changed from relative for better control */
   margin-left: 20px;
-  vertical-align: middle; /* Aligns the dropdown vertically with other nav items */
+  vertical-align: middle; /* Aligns the dropdown vertically with other nav items */ 
 }
 
 .scroll-about-btn {
@@ -62,7 +62,7 @@ html, body {
   .navbar {
     width: 100%;
     padding: 50px 0;  /* Adjusted padding to be less obtrusive */
-    background-color: rgba(255, 255, 255, 0.95);  /* White with slight transparency */
+    background-color: rgba(244, 248, 248, 0.95);  /* White with slight transparency */
     position: fixed;
     top: 0;
     left: 0;
