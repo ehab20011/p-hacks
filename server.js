@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   .catch(err => console.error('MongoDB connection failed:', err));
 
 // Import models
-const { Refugee, Worker } = require('./mongo_models/model');
+const { Refugee, Worker, Message } = require('./mongo_models/model');
 
 // WebSocket setup
 const activeUsers = new Map();
@@ -61,11 +61,29 @@ function handleLogin(socket, user) {
 
 function handleSendMessage(message) {
   const { senderId, receiverId, text, file } = message;
+
+  // Store the message in MongoDB
+  const newMessage = new Message({
+    senderId,
+    receiverId,
+    text,
+    file: file ? {
+      name: file.name,
+      type: file.type,
+      data: file.data,
+    } : null,
+  });
+
+  newMessage.save()
+    .then(() => console.log('Message stored in DB'))
+    .catch(err => console.error('Error saving message to DB:', err));
+
+  // Send the message to the receiver
   const receiverSocket = activeUsers.get(receiverId)?.socket;
   if (receiverSocket && receiverSocket.readyState === WebSocket.OPEN) {
     receiverSocket.send(JSON.stringify({
       type: 'new_message',
-      payload: { senderId, text, file } // Include the file in the payload if present
+      payload: { senderId, text, file }
     }));
   }
 }
@@ -158,6 +176,24 @@ app.post('/api/login', async (req, res) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+// POST API route to handle message loading
+app.post('/api/getMessages', async (req, res) => {
+  const { senderId, receiverId } = req.body;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { senderId, receiverId },
+        { senderId: receiverId, receiverId: senderId }
+      ]
+    }).sort({ createdAt: 1 }); // Sort by date to get the correct order
+    res.json(messages);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ message: 'Error fetching messages' });
   }
 });
 

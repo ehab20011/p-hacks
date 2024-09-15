@@ -80,9 +80,9 @@ html, body {
   }
   
   .navbar-logo .navbar-brand {
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 700;
-    color: #ffd300;  
+    color: #ffd500;  
     text-decoration: none;
     letter-spacing: 2px;
   }

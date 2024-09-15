@@ -20,37 +20,25 @@ This will also allow for any quick connection to security so if anything gets ou
 
 ## Features
 
-- User-friendly web application for refugees and asylum seekers
+- User-friendly web application for refugees and asylum seekers + employees
 - Encampment selection and registration
 - Direct communication channel with aid workers and security personnel
 - Multi-language support for better accessibility
+
+###  Future Features
 - Real-time updates on available resources and services
 - Emergency alert system for urgent situations
 
 ## Technology Stack
 
-- Frontend: [Your chosen frontend framework, e.g., React, Vue.js]
-- Backend: [Your chosen backend technology, e.g., Node.js, Django]
-- Database: [Your chosen database, e.g., MongoDB, PostgreSQL]
-- Authentication: [Your chosen auth method, e.g., JWT, OAuth]
-- Hosting: [Your chosen hosting platform, e.g., AWS, Heroku]
-
-## Getting Started
-
-[Instructions on how to set up and run the project locally]
-
-## Contributing
-
-We welcome contributions from the community! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and suggest improvements.
-
-## License
-
-This project is licensed under the [Your chosen license, e.g., MIT License] - see the [LICENSE.md](LICENSE.md) file for details.
+- Frontend: Node JS, React, HTML, CSS
+- Backend: ExpressJS, JS
+- Database: MongoDB (Auth Built In)
 
 ## Contact
 
-For any questions or concerns, please reach out to [Your contact information or project email].
+For any questions or concerns, please reach out to difokerlyn19@gmail.com.
 
 ## Acknowledgments
 
-- [List any organizations, individuals, or resources that have been helpful in the development of RefuConnect]
+- Thank you HopHacks for an amazing Hackathon!

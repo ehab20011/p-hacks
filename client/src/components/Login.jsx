@@ -109,9 +109,9 @@ function Login() {
                     />
                   </div>
                   {error && <p style={{ color: "red" }}>{error}</p>}
-                  <a href="#" className="forgot-password">
+                  <Link to="/forgotpw" className="forgot-password">
                     Forgot Password?
-                  </a>
+                  </Link>
                   <div className="button-container">
                     <button
                       type="submit"
