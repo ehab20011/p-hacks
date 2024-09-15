@@ -92,7 +92,70 @@ html, body {
   .navbar-login:hover {
     background-color: #feb603;
   }
-  
+
+  /* Styling for Google Translate widget container */
+.navbar-language {
+  position: relative;
+  margin-left: 20px;
+}
+
+/* Google Translate Widget Styling */
+#google_translate_element {
+  min-width: 100px; /* Adjust width as necessary */
+}
+
+/* Adjust the iframe inside the widget to align with navbar height */
+#google_translate_element iframe {
+  height: 40px;
+  border: none;
+}
+
+/* Hide the Google Translate bar's branding */
+.goog-te-gadget-icon {
+  display: none !important;
+}
+
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-gadget img{
+  display:none !important;
+}
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+  } 
+body {
+  top: 0px !important; 
+  }
+
+
+/* Optional: Hide the dropdown arrow if it clashes with the design */
+.goog-te-gadget-simple .goog-te-menu-value span {
+  display: none;
+}
+
+/* Style adjustments for the dropdown menu */
+.goog-te-gadget-simple {
+  border: none;
+  background-color: transparent;
+  color: #555; /* Set the text color */
+}
+
+.goog-te-gadget-simple .goog-te-menu-value {
+  padding: 5px 10px;
+  line-height: normal;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+}
+
+/* Hover and focus styles for the dropdown */
+.goog-te-gadget-simple .goog-te-menu-value:hover,
+.goog-te-gadget-simple .goog-te-menu-value:focus {
+  text-decoration: none;
+  background-color: #f8f8f8; /* Light grey background on hover/focus */
+}
+
   /* Responsive Styles */
   @media (max-width: 768px) {
     .navbar-links {

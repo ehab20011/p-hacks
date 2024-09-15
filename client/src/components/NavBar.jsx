@@ -9,6 +9,26 @@ const NavBar = () => {
     "Thai", "Gujarati", "Jin", "Persian", "Polish", "Pashto", "Kannada", "Xiang"
   ];
 
+  const addCustomStyle = () => {
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = `
+      .goog-te-banner-frame.skiptranslate { display: none !important; }
+      body { top: 0px !important; }
+    `;
+    document.head.appendChild(style);
+  };
+  
+  const loadHandler = () => {
+    window.google.translate.TranslateElement({
+      pageLanguage: 'en',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: false
+    }, 'google_translate_element');
+    addCustomStyle();
+  };
+  
+
   return (
     <header className="navbar">
       <div className="navbar-container">
@@ -25,13 +45,8 @@ const NavBar = () => {
             Sign Up
           </a>
           <div className="navbar-language">
-            <select>
-              {languages.map((language, index) => (
-                <option key={index} value={language}>
-                  {language}
-                </option>
-              ))}
-            </select>
+            {/* Google Translate widget placeholder */}
+            <div id="google_translate_element"></div>
           </div>
         </nav>
       </div>
