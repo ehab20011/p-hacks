@@ -8,7 +8,7 @@ import About from "./About";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("refugee"); // 'refugee' or 'employee'
+  const [role, setRole] = useState("refugee");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -30,20 +30,28 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
+        // Check if the response includes a user ID
+        if (!data.id) {
+          throw new Error("User ID not provided by the server");
+        }
+        
         localStorage.setItem("userName", data.name);
-        localStorage.setItem("userRole", role); // Store the role in localStorage
+        localStorage.setItem("userRole", role);
+        localStorage.setItem("userId", data.id);
         console.log(
           `${role.charAt(0).toUpperCase() + role.slice(1)} logged in:`,
-          data.name
+          data.name,
+          "ID:",
+          data.id
         );
-        navigate("/chatsystem"); // Redirect all to ChatSystem
+        navigate("/chatsystem");
       } else {
         console.error("Error from server:", data.message);
-        setError(data.message);
+        setError(data.message || "Login failed. Please try again.");
       }
     } catch (err) {
       console.error("Login failed:", err);
-      setError("Login failed, please try again.");
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -101,9 +109,9 @@ function Login() {
                     />
                   </div>
                   {error && <p style={{ color: "red" }}>{error}</p>}
-                  <Link to="/forgotpw" className="forgot-password">
+                  <a href="#" className="forgot-password">
                     Forgot Password?
-                  </Link>
+                  </a>
                   <div className="button-container">
                     <button
                       type="submit"

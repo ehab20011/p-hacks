@@ -1,183 +1,101 @@
 const express = require('express');
-const path = require('path');
+const http = require('http');
+const WebSocket = require('ws');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const http = require('http');
-const { Server } = require('socket.io');
+const path = require('path');
 
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-});
+const wss = new WebSocket.Server({ server });
+
 app.use(cors());
-
-const { Refugee, Worker } = require('./mongo_models/model');
-
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'build')));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
 
-// Store active users
 const activeUsers = new Map();
 
-io.on('connection', (socket) => {
-  console.log('A user connected with id:', socket.id);
+wss.on('connection', function(socket) {
+  console.log('A user connected');
 
-  socket.on('login', async ({ email, role }) => {
-    console.log(`Login attempt: ${email}, ${role}`);
-    let user;
-    if (role === 'refugee') {
-      user = await Refugee.findOne({ email });
-    } else if (role === 'worker') {
-      user = await Worker.findOne({ email });
-    }
+  socket.on('message', function incoming(message) {
+    const data = JSON.parse(message);
+    console.log('Received:', data);
 
-    if (user) {
-      const userData = { id: user._id.toString(), name: user.name, email: user.email, role };
-      activeUsers.set(socket.id, userData);
-      socket.emit('login_success', userData);
-      io.emit('user_list', Array.from(activeUsers.values()));
-      console.log("Updated user list:", Array.from(activeUsers.values()));
-    } else {
-      socket.emit('login_error', 'User not found');
-      console.log(`Login failed for ${email}`);
+    switch (data.type) {
+      case 'login':
+        handleLogin(socket, data.payload);
+        break;
+      case 'send_message':
+        handleSendMessage(data.payload);
+        break;
     }
   });
 
-  socket.on('send_message', (data) => {
-    console.log("Message received:", data);
-    const sender = activeUsers.get(socket.id);
-    if (sender) {
-      io.emit('receive_message', {
-        ...data,
-        senderId: sender.id,
-        senderName: sender.name,
-        senderEmail: sender.email,
-        senderRole: sender.role
-      });
+  socket.on('close', () => {
+    const userId = getUserIdBySocket(socket);
+    if (userId) {
+      activeUsers.delete(userId);
+      broadcastActiveUsers();
     }
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}, data:`, activeUsers.get(socket.id));
-    activeUsers.delete(socket.id);
-    io.emit('user_list', Array.from(activeUsers.values()));
+    console.log('A user disconnected');
   });
 });
 
+function handleLogin(socket, user) {
+  activeUsers.set(user.id, { socket, ...user });
+  socket.userId = user.id;
+  broadcastActiveUsers();
+}
 
-// POST Refugee signup route
-app.post('/api/signup/Refugee', async (req, res) => {
-  const { name, email, password, age, gender, familyMembers, encampment, language, dateOfBirth, phoneNumber } = req.body;
-
-  try {
-    // Check if the refugee already exists by email
-    const existingRefugee = await Refugee.findOne({ email });
-    if (existingRefugee) {
-      return res.status(400).json({ message: 'Email is already registered' });
-    }
-
-    // Create a new refugee document
-    const newRefugee = new Refugee({
-      name,
-      email,
-      password,  // Remember to hash the password later using bcrypt
-      age,
-      gender,
-      familyMembers,
-      encampment,
-      language,
-      dateOfBirth,
-      phoneNumber
-    });
-
-    // Save refugee to the database
-    await newRefugee.save();
-    res.status(201).json({ message: 'Refugee registered successfully', refugee: newRefugee });
-  } catch (error) {
-    console.error('Error registering refugee:', error);
-    res.status(500).json({ message: 'Server error during refugee registration', error });
+function handleSendMessage(message) {
+  const { senderId, receiverId, text } = message;
+  const receiverSocket = activeUsers.get(receiverId)?.socket;
+  if (receiverSocket && receiverSocket.readyState === WebSocket.OPEN) {
+    receiverSocket.send(JSON.stringify({
+      type: 'new_message',
+      payload: { senderId, text }
+    }));
   }
-});
+}
 
-// POST Worker signup route
-app.post('/api/signup/worker', async (req, res) => {
-  const { name, email, password, role, encampment, language, dateOfBirth, gender, phoneNumber, idNumber } = req.body;
-
-  try {
-    // Check if the worker already exists by email
-    const existingWorker = await Worker.findOne({ email });
-    if (existingWorker) {
-      return res.status(400).json({ message: 'Email is already registered' });
+function broadcastActiveUsers() {
+  const users = Array.from(activeUsers.values()).map(({ id, name, role }) => ({ id, name, role }));
+  const message = JSON.stringify({ type: 'active_users', payload: users });
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
     }
+  });
+}
 
-    // Create a new worker document
-    const newWorker = new Worker({
-      name,
-      email,
-      password,  // Remember to hash the password later using bcrypt
-      role,
-      encampment,
-      language,
-      dateOfBirth,
-      gender,
-      phoneNumber,
-      idNumber
-    });
-
-    // Save worker to the database
-    await newWorker.save();
-    res.status(201).json({ message: 'Worker registered successfully', worker: newWorker });
-  } catch (error) {
-    console.error('Error registering worker:', error);
-    res.status(500).json({ message: 'Server error during worker registration', error });
+function getUserIdBySocket(socket) {
+  for (let [userId, user] of activeUsers) {
+    if (user.socket === socket) {
+      return userId;
+    }
   }
-});
+  return null;
+}
 
-// POST API route to handle login
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
-  console.log(`Login attempt with email: ${email} Role: ${role}`);
-
+  
   try {
-    const refugee = await Refugee.findOne({ email: email.trim() });
-
-    if (!refugee) {
-      console.log(`Refugee not found for email: ${email}`);
-      return res.status(404).json({ message: 'Refugee not found' });
-    }
-
-    console.log('Refugee found:', refugee.name);
-
-    if (password !== refugee.password) {
-      console.log('Invalid password');
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    console.log('Login successful');
-    res.json({
-      message: 'Login successful',
-      refugee: {
-        name: refugee.name,
-        email: refugee.email,
-      },
-    });
-  } catch (err) {
-    console.error('Error during login:', err);
-    res.status(500).json({ message: 'Server error during login' });
+    // This is a placeholder. In a real app, you'd validate against your database
+    const user = { id: Date.now().toString(), name: email.split('@')[0], email, role };
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Ensure all API routes are defined before this route
+app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/public', 'index.html'));
 });
