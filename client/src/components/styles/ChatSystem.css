@@ -162,3 +162,33 @@ html, body {
   font-size: 18px;
   font-weight: 500;
 }
+
+/* Hide the default file input */
+.chat-file-input-hidden {
+  display: none;
+}
+
+/* Style the paperclip button */
+.chat-file-input-label {
+  margin-left: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: #888;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chat-file-input-label:hover {
+  background-color: #e6f7ff;
+  color: #128c7e;
+  transform: scale(1.1);
+}
+
+.chat-file-input-label i {
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.chat-file-input-label:hover i {
+  color: #128c7e;
+}

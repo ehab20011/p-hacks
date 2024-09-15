@@ -8,6 +8,7 @@ const ChatSystem = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState({});
   const [messageInput, setMessageInput] = useState("");
+  const [fileInput, setFileInput] = useState(null); // Added state for file input
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -61,8 +62,12 @@ const ChatSystem = () => {
     setSelectedChat(userId);
   };
 
+  const handleFileChange = (e) => {
+    setFileInput(e.target.files[0]);
+  };
+
   const handleSend = () => {
-    if (!selectedChat || messageInput.trim() === "") return;
+    if (!selectedChat || (messageInput.trim() === "" && !fileInput)) return;
 
     const newMessage = {
       type: 'send_message',
@@ -73,14 +78,29 @@ const ChatSystem = () => {
       }
     };
 
-    socketRef.current.send(JSON.stringify(newMessage));
-    handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
+    if (fileInput) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        newMessage.payload.file = {
+          name: fileInput.name,
+          type: fileInput.type,
+          data: reader.result, // Base64 encoded file
+        };
+        socketRef.current.send(JSON.stringify(newMessage));
+        handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
+        setFileInput(null); // Reset file input after sending
+      };
+      reader.readAsDataURL(fileInput); // Convert file to Base64 for sending
+    } else {
+      socketRef.current.send(JSON.stringify(newMessage));
+      handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
+    }
+
     setMessageInput("");
   };
 
   return (
     <div className="chat-system">
-      
       <div className="chat-container">
         <div className="active-users">
           <h2>Active Users</h2>
@@ -102,6 +122,13 @@ const ChatSystem = () => {
                   <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
                     <div className="message-sender">{msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}</div>
                     <div className="message-text">{msg.text}</div>
+                    {msg.file && (
+                      <div className="message-file">
+                        <a href={msg.file.data} download={msg.file.name}>
+                          {msg.file.name}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>*/}
@@ -127,6 +154,17 @@ const ChatSystem = () => {
                   placeholder="Type a message..."
                   className="chat-input"
                 />
+                
+                <input
+                  type="file"
+                  id="fileInput"
+                  onChange={handleFileChange}
+                  className="chat-file-input-hidden"
+                />
+                <label htmlFor="fileInput" className="chat-file-input-label">
+                  <i className="fas fa-paperclip"></i>
+                </label>
+
                 <button onClick={handleSend} className="chat-send-button">
                   Send
                 </button>
