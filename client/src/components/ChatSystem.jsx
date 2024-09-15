@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles/ChatSystem.css";
 import NavBar from "./NavBar";
-
-const socket = io('http://localhost:5000');
 
 const ChatSystem = () => {
   const [user, setUser] = useState(null);
@@ -11,64 +8,79 @@ const ChatSystem = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState({});
   const [messageInput, setMessageInput] = useState("");
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    if (user) {
-      socket.emit('login', { email: user.email, role: user.role });
-    }
-  
-    socket.on('login_success', (userData) => {
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-    });
-  
-    socket.on('login_error', (error) => {
-      console.error('Login error:', error);
-    });
-  
-    socket.on('user_list', (users) => {
-      if (user?.id) {
-        setActiveUsers(users.filter(u => u.id !== user.id));
+    const userName = localStorage.getItem("userName");
+    const userRole = localStorage.getItem("userRole");
+    const userId = localStorage.getItem("userId");
+    setUser({ id: userId, name: userName, role: userRole });
+
+    socketRef.current = new WebSocket('ws://localhost:5000');
+
+    socketRef.current.onopen = () => {
+      console.log('Connected to WebSocket');
+      socketRef.current.send(JSON.stringify({
+        type: 'login',
+        payload: { id: userId, name: userName, role: userRole }
+      }));
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log("Received message:", message);
+
+      switch (message.type) {
+        case 'active_users':
+          setActiveUsers(message.payload.filter(u => u.id !== userId));
+          break;
+        case 'new_message':
+          handleIncomingMessage(message.payload);
+          break;
       }
-    });
-  
+    };
+
+    socketRef.current.onclose = () => {
+      console.log('Disconnected from WebSocket');
+    };
+
     return () => {
-      socket.off('login_success');
-      socket.off('login_error');
-      socket.off('user_list');
+      socketRef.current.close();
     };
-  }, [user]);
-  
+  }, []);
 
-  const handleSend = () => {
-    if (!selectedChat || messageInput.trim() === "") return;
-
-    const newMessage = {
-      receiverId: selectedChat,
-      text: messageInput,
-      senderId: user.id,
-      senderName: user.name,
-      senderEmail: user.email,
-      senderRole: user.role
-    };
-
-    console.log("Sending message:", newMessage);
-    socket.emit('send_message', newMessage);
-
+  const handleIncomingMessage = (message) => {
     setChats(prevChats => {
-      const updatedMessages = [...(prevChats[selectedChat]?.messages || []), newMessage];
-      return { ...prevChats, [selectedChat]: { ...prevChats[selectedChat], messages: updatedMessages } };
+      const chatId = message.senderId;
+      const updatedChat = prevChats[chatId] ? [...prevChats[chatId], message] : [message];
+      return { ...prevChats, [chatId]: updatedChat };
     });
-
-    setMessageInput("");
   };
 
   const handleChatClick = (userId) => {
     setSelectedChat(userId);
   };
 
+  const handleSend = () => {
+    if (!selectedChat || messageInput.trim() === "") return;
+
+    const newMessage = {
+      type: 'send_message',
+      payload: {
+        receiverId: selectedChat,
+        text: messageInput,
+        senderId: user.id,
+      }
+    };
+
+    socketRef.current.send(JSON.stringify(newMessage));
+    handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
+    setMessageInput("");
+  };
+
   return (
     <div className="chat-system">
+      
       <div className="chat-container">
         <div className="active-users">
           <h2>Active Users</h2>
@@ -86,9 +98,9 @@ const ChatSystem = () => {
           {selectedChat ? (
             <>
               <div className="chat-messages">
-                {chats[selectedChat]?.messages.map((msg, index) => (
+                {chats[selectedChat]?.map((msg, index) => (
                   <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
-                    <div className="message-sender">{msg.senderName}</div>
+                    <div className="message-sender">{msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}</div>
                     <div className="message-text">{msg.text}</div>
                   </div>
                 ))}
@@ -118,4 +130,3 @@ const ChatSystem = () => {
 };
 
 export default ChatSystem;
-
