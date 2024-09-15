@@ -31,12 +31,15 @@ body {
   align-items: center;
   width: 50%;
   overflow: hidden;
+  position: relative; /* Added for gradient overlay */
+  border-radius: 5%; /* Make the container itself rounded */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .left-container img {
   width: 100%;
   height: auto;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, filter 0.5s ease;
 }
 
 .left-container img:hover {
