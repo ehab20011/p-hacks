@@ -68,7 +68,7 @@ const ChatSystem = () => {
 
   const handleSend = () => {
     if (!selectedChat || (messageInput.trim() === "" && !fileInput)) return;
-  
+
     const newMessage = {
       type: 'send_message',
       payload: {
@@ -77,13 +77,7 @@ const ChatSystem = () => {
         senderId: user.id,
       }
     };
-  
-    // Optimistically add the message to the chat UI before sending it to the server
-    setChats((prevChats) => {
-      const updatedChat = prevChats[selectedChat] ? [...prevChats[selectedChat], newMessage.payload] : [newMessage.payload];
-      return { ...prevChats, [selectedChat]: updatedChat };
-    });
-  
+
     if (fileInput) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -92,28 +86,18 @@ const ChatSystem = () => {
           type: fileInput.type,
           data: reader.result, // Base64 encoded file
         };
-  
-        // Send the message with file to the server
         socketRef.current.send(JSON.stringify(newMessage));
-  
-        // Optionally handle displaying the message with file immediately
-        setChats((prevChats) => {
-          const updatedChat = prevChats[selectedChat] ? [...prevChats[selectedChat], newMessage.payload] : [newMessage.payload];
-          return { ...prevChats, [selectedChat]: updatedChat };
-        });
-  
+        handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
         setFileInput(null); // Reset file input after sending
       };
-      reader.readAsDataURL(fileInput);
+      reader.readAsDataURL(fileInput); // Convert file to Base64 for sending
     } else {
-      // Send the text message to the server
       socketRef.current.send(JSON.stringify(newMessage));
+      handleIncomingMessage({ ...newMessage.payload, senderId: user.id });
     }
-  
-    setMessageInput(""); // Clear the input field
+
+    setMessageInput("");
   };
-  
-  
 
   return (
     <div className="chat-system">
