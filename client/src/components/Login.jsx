@@ -5,7 +5,6 @@ import bgimg from "./images/login.jpg";
 import NavBar from "./NavBar";
 import About from "./About";
 
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +32,10 @@ function Login() {
       if (response.ok) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("userRole", role); // Store the role in localStorage
-        console.log(`${role.charAt(0).toUpperCase() + role.slice(1)} logged in:`, data.name);
+        console.log(
+          `${role.charAt(0).toUpperCase() + role.slice(1)} logged in:`,
+          data.name
+        );
         navigate("/chatsystem"); // Redirect all to ChatSystem
       } else {
         console.error("Error from server:", data.message);
