@@ -17,7 +17,7 @@ const About = () => {
           being put in a shelter or encampment where you can only rely on the
           others to help you? At <b>RefuConnect</b> our goal is to help
           refugees/asylum seekers connect & stay connected with their aids at
-          the encampements they're staying in.
+          the encampments they're staying in.
         </p>
 
         <div className="team">
@@ -25,22 +25,31 @@ const About = () => {
 
           <ul className="teamimg">
             <li>
-              <img src={ehab} alt="Team Member 1" />
+              <a href="https://www.linkedin.com/in/ehab-abdalla-04ab411b3/" target="_blank" rel="noopener noreferrer">
+                <img src={ehab} alt="Ehab Abdalla" />
+              </a>
               <h4>Ehab Abdalla</h4>
               <p>Backend</p>
             </li>
             <li>
-              <img src={sophia} alt="Team Member 2" />
+              <a href="https://www.linkedin.com/in/sophiayau" target="_blank" rel="noopener noreferrer">
+                <img src={sophia} alt="Sophia Yau" />
+              </a>
               <h4>Sophia Yau</h4>
               <p>Frontend</p>
             </li>
             <li>
-              <img src={kerlyn} alt="Team Member 3" />
+              <a href="https://www.linkedin.com/in/kerlyn-difo-81059b23b/" target="_blank" rel="noopener noreferrer">
+                <img src={kerlyn} alt="Kerlyn Difo" />
+              </a>
               <h4>Kerlyn Difo</h4>
               <p>Backend</p>
             </li>
             <li>
-              <img src={zian} alt="Team Member 4" />
+              <a href="https://www.linkedin.com/in/mohammed-zian-hassan/" target="_blank" rel="noopener noreferrer">
+                <img src={zian} alt="Zian Hassan" />
+              </a>
+
               <h4>Zian Hassan</h4>
               <p>Frontend</p>
             </li>
