@@ -8,7 +8,7 @@ const ChatSystem = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState({});
   const [messageInput, setMessageInput] = useState("");
-  const [fileInput, setFileInput] = useState(null); // Added state for file input
+  const [fileInput, setFileInput] = useState(null);
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -25,11 +25,13 @@ const ChatSystem = () => {
     socketRef.current = new WebSocket('ws://localhost:5000');
   
     socketRef.current.onopen = () => {
-      console.log('Connected to WebSocket');
-      socketRef.current.send(JSON.stringify({
-        type: 'login',
-        payload: { id: userId, name: userName, role: userRole }
-      }));
+      console.log("Connected to WebSocket");
+      socketRef.current.send(
+        JSON.stringify({
+          type: "login",
+          payload: { id: userId, name: userName, role: userRole },
+        })
+      );
     };
   
     socketRef.current.onmessage = (event) => {
@@ -37,17 +39,17 @@ const ChatSystem = () => {
       console.log("Received message:", message);
   
       switch (message.type) {
-        case 'active_users':
-          setActiveUsers(message.payload.filter(u => u.id !== userId));
+        case "active_users":
+          setActiveUsers(message.payload.filter((u) => u.id !== userId));
           break;
-        case 'new_message':
+        case "new_message":
           handleIncomingMessage(message.payload);
           break;
       }
     };
   
     socketRef.current.onclose = () => {
-      console.log('Disconnected from WebSocket');
+      console.log("Disconnected from WebSocket");
     };
   
     return () => {
@@ -56,9 +58,11 @@ const ChatSystem = () => {
   }, []);  
 
   const handleIncomingMessage = (message) => {
-    setChats(prevChats => {
+    setChats((prevChats) => {
       const chatId = message.senderId;
-      const updatedChat = prevChats[chatId] ? [...prevChats[chatId], message] : [message];
+      const updatedChat = prevChats[chatId]
+        ? [...prevChats[chatId], message]
+        : [message];
       return { ...prevChats, [chatId]: updatedChat };
     });
   };
@@ -99,52 +103,71 @@ const ChatSystem = () => {
       console.error("User is not defined");
       return;
     }
-  
+ 
     const newMessage = {
-      type: 'send_message',
+      type: "send_message",
       payload: {
         receiverId: selectedChat,
         text: messageInput,
         senderId: user.id, // Make sure user.id is defined here
       }
     };
-  
-    // Optimistically add the message to the chat UI before sending it to the server
+
     setChats((prevChats) => {
-      const updatedChat = prevChats[selectedChat] ? [...prevChats[selectedChat], newMessage.payload] : [newMessage.payload];
+      const updatedChat = prevChats[selectedChat]
+        ? [...prevChats[selectedChat], newMessage.payload]
+        : [newMessage.payload];
       return { ...prevChats, [selectedChat]: updatedChat };
     });
-  
+
     if (fileInput) {
       const reader = new FileReader();
       reader.onload = () => {
         newMessage.payload.file = {
           name: fileInput.name,
           type: fileInput.type,
-          data: reader.result, // Base64 encoded file
+          data: reader.result,
         };
-  
-        // Send the message with file to the server
+
         socketRef.current.send(JSON.stringify(newMessage));
-  
-        setFileInput(null); // Reset file input after sending
+
+        setChats((prevChats) => {
+          const updatedChat = prevChats[selectedChat]
+            ? [...prevChats[selectedChat], newMessage.payload]
+            : [newMessage.payload];
+          return { ...prevChats, [selectedChat]: updatedChat };
+        });
+
+        setFileInput(null);
       };
       reader.readAsDataURL(fileInput);
     } else {
-      // Send the text message to the server
       socketRef.current.send(JSON.stringify(newMessage));
     }
-  
-    setMessageInput(""); // Clear the input field
-  };  
-  
-  
+
+
+    setMessageInput("");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+    socketRef.current.close();
+    window.location.href = "/login"; // Redirect to login page
+  };
 
   return (
+    <div className="chat-system-container">
     <div className="chat-system">
       <div className="chat-container">
         <div className="active-users">
-          <h2>Active Users</h2>
+          <div className="active-users-header">
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+            <h2>Inbox</h2>
+          </div>
           {activeUsers.map((user) => (
             <div
               key={user.id}
@@ -158,18 +181,20 @@ const ChatSystem = () => {
         <div className="chat-window">
           {selectedChat ? (
             <>
-              {/*<div className="chat-messages">
+              <div className="chat-messages">
                 {chats[selectedChat]?.map((msg, index) => (
-                  <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
-                    <div className="message-sender">{msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}</div>
+                  <div
+                    key={index}
+                    className={`chat-message ${
+                      msg.senderId === user.id ? "sent" : "received"
+                    }`}
+                  >
+                    <div className="message-sender">
+                      {msg.senderId === user.id
+                        ? "You"
+                        : activeUsers.find((u) => u.id === msg.senderId)?.name}
+                    </div>
                     <div className="message-text">{msg.text}</div>
-                    {msg.file && (
-                      <div className="message-file">
-                        <a href={msg.file.data} download={msg.file.name}>
-                          {msg.file.name}
-                        </a>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>*/}
@@ -199,7 +224,7 @@ const ChatSystem = () => {
                   placeholder="Type a message..."
                   className="chat-input"
                 />
-                
+
                 <input
                   type="file"
                   id="fileInput"
@@ -222,6 +247,7 @@ const ChatSystem = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

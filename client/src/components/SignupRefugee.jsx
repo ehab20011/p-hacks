@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./styles/SignupRefugee.css";
 import NavBar from "./NavBar";
 
@@ -15,6 +16,8 @@ const SignupRefugee = () => {
   const [language, setLanguage] = useState(""); // Language
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const navigate = useNavigate(); // Create navigate function
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -47,6 +50,7 @@ const SignupRefugee = () => {
       const result = await response.json();
       if (response.ok) {
         alert("Refugee signed up successfully!");
+        navigate("/login"); // Redirect to Login page after successful signup
       } else {
         alert(`Error: ${result.message}`);
       }

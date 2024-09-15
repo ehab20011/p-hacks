@@ -32,6 +32,10 @@
     padding-bottom: 10px;
 }
 
+.chat-container {
+    animation: slideIn 1s ease-out; /* Increase duration here */
+}
+
 .signup-refugee-container form {
     opacity: 0;
     animation: fadeIn 1s ease-out forwards;
@@ -203,4 +207,57 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+
+/* For tablets and smaller screens */
+@media (max-width: 768px) {
+    .signup-worker-container {
+        margin-top: 50px;
+        padding: 20px;
+    }
+
+    .signup-worker-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .signup-worker-container form {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .signup-worker-column {
+        min-width: 100%;
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 480px) {
+    .signup-worker-container {
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .signup-worker-container h2 {
+        font-size: 1.25rem;
+    }
+
+    .signup-worker-container form {
+        gap: 10px;
+    }
+
+    .signup-worker-column {
+        min-width: 100%;
+    }
+
+    .signup-worker-column div input,
+    .signup-worker-column div select {
+        font-size: 0.9rem;
+    }
+
+    .signup-worker-container button {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
 }
