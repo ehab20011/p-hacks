@@ -14,11 +14,16 @@ const ChatSystem = () => {
   useEffect(() => {
     const userName = localStorage.getItem("userName");
     const userRole = localStorage.getItem("userRole");
-    const userId = localStorage.getItem("userId");
-    setUser({ id: userId, name: userName, role: userRole });
-
+    const userId = localStorage.getItem("userId"); // Ensure this is defined
+  
+    if (userId && userName && userRole) {
+      setUser({ id: userId, name: userName, role: userRole });
+    } else {
+      console.error("User data is missing in localStorage");
+    }
+  
     socketRef.current = new WebSocket('ws://localhost:5000');
-
+  
     socketRef.current.onopen = () => {
       console.log('Connected to WebSocket');
       socketRef.current.send(JSON.stringify({
@@ -26,11 +31,11 @@ const ChatSystem = () => {
         payload: { id: userId, name: userName, role: userRole }
       }));
     };
-
+  
     socketRef.current.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("Received message:", message);
-
+  
       switch (message.type) {
         case 'active_users':
           setActiveUsers(message.payload.filter(u => u.id !== userId));
@@ -40,15 +45,15 @@ const ChatSystem = () => {
           break;
       }
     };
-
+  
     socketRef.current.onclose = () => {
       console.log('Disconnected from WebSocket');
     };
-
+  
     return () => {
       socketRef.current.close();
     };
-  }, []);
+  }, []);  
 
   const handleIncomingMessage = (message) => {
     setChats(prevChats => {
@@ -60,7 +65,28 @@ const ChatSystem = () => {
 
   const handleChatClick = (userId) => {
     setSelectedChat(userId);
+  
+    fetch('/api/getMessages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        senderId: user.id,
+        receiverId: userId
+      })
+    })
+      .then(response => response.json())
+      .then(messages => {
+        console.log('Fetched messages:', messages); // Add this line to inspect the messages
+        // Ensure that the chat history is an array (fallback to empty array if no messages)
+        setChats(prevChats => ({ ...prevChats, [userId]: Array.isArray(messages) ? messages : [] }));
+      })
+      .catch(err => console.error('Error fetching messages:', err));
   };
+  
+  
+  
 
   const handleFileChange = (e) => {
     setFileInput(e.target.files[0]);
@@ -69,12 +95,17 @@ const ChatSystem = () => {
   const handleSend = () => {
     if (!selectedChat || (messageInput.trim() === "" && !fileInput)) return;
   
+    if (!user || !user.id) {
+      console.error("User is not defined");
+      return;
+    }
+  
     const newMessage = {
       type: 'send_message',
       payload: {
         receiverId: selectedChat,
         text: messageInput,
-        senderId: user.id,
+        senderId: user.id, // Make sure user.id is defined here
       }
     };
   
@@ -96,12 +127,6 @@ const ChatSystem = () => {
         // Send the message with file to the server
         socketRef.current.send(JSON.stringify(newMessage));
   
-        // Optionally handle displaying the message with file immediately
-        setChats((prevChats) => {
-          const updatedChat = prevChats[selectedChat] ? [...prevChats[selectedChat], newMessage.payload] : [newMessage.payload];
-          return { ...prevChats, [selectedChat]: updatedChat };
-        });
-  
         setFileInput(null); // Reset file input after sending
       };
       reader.readAsDataURL(fileInput);
@@ -111,7 +136,7 @@ const ChatSystem = () => {
     }
   
     setMessageInput(""); // Clear the input field
-  };
+  };  
   
   
 
@@ -149,17 +174,21 @@ const ChatSystem = () => {
                 ))}
               </div>*/}
               <div className="chat-messages">
-  {chats[selectedChat]?.map((msg, index) => (
-    <div
-      key={index}
-      className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
-    >
-      <div className="message-sender">
-        {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
+  {Array.isArray(chats[selectedChat]) && chats[selectedChat].length > 0 ? (
+    chats[selectedChat].map((msg, index) => (
+      <div
+        key={index}
+        className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
+      >
+        <div className="message-sender">
+          {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
+        </div>
+        <div className="message-text">{msg.text}</div>
       </div>
-      <div className="message-text">{msg.text}</div>
-    </div>
-  ))}
+    ))
+  ) : (
+    <div>No messages yet</div>
+  )}
 </div>
 
               <div className="chat-input-container">
