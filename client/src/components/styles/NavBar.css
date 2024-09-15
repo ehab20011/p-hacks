@@ -19,9 +19,9 @@ html, body {
 
 .navbar-language {
   position: relative;
-  display: inline-block; /* Changed from relative for better control */
+  display: inline-block; 
   margin-left: 20px;
-  vertical-align: middle; /* Aligns the dropdown vertically with other nav items */ 
+  vertical-align: middle; 
 }
 
 .scroll-about-btn {
@@ -44,8 +44,8 @@ html, body {
 
   .navbar-login {
     display: flex;
-    justify-content: space-between; /* Aligns children horizontally */
-    align-items: center; /* Aligns children vertically */
+    justify-content: space-between; 
+    align-items: center; 
     padding: 8px 20px;
     border-radius: 25px;
     background-color: #ffd300;
@@ -61,13 +61,13 @@ html, body {
   
   .navbar {
     width: 100%;
-    padding: 50px 0;  /* Adjusted padding to be less obtrusive */
-    background-color: rgba(244, 248, 248, 0.95);  /* White with slight transparency */
+    padding: 50px 0;  
+    background-color: rgba(255, 255, 255, 0.95);  
     position: fixed;
     top: 0;
     left: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
   }
   
   .navbar-container {
@@ -82,7 +82,7 @@ html, body {
   .navbar-logo .navbar-brand {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #ffd300;  /* Gold color for the logo for contrast */
+    color: #ffd300;  
     text-decoration: none;
     letter-spacing: 2px;
   }
@@ -98,27 +98,27 @@ html, body {
   }
   
   .navbar-links a {
-    color: #ffffff;  /* Ensures text is white for visibility on transparent bg */
+    color: #ffffff;  
     text-decoration: none;
     font-size: 1.1rem;
     transition: color 0.3s;
   }
   
   .navbar-links a:hover {
-    color: #ddd;  /* Light grey on hover for subtle effect */
+    color: #ddd;
   }
   
   .navbar-login {
     padding: 8px 20px;
     border-radius: 25px;
-    background-color: #ffd300;  /* Maintained branding color for login/signup */
+    background-color: #ffd300;  
     color: #ffffff;
     font-weight: 600;
     transition: background-color 0.3s ease;
   }
   
   .navbar-login:hover {
-    background-color: #feb603;  /* Darker gold on hover for visibility */
+    background-color: #feb603;  
   }
   
 
@@ -130,48 +130,48 @@ html, body {
 
 /* Google Translate Widget Styling */
 #google_translate_element {
-  min-width: 150px; /* Increased width for better visibility */
+  min-width: 150px; 
 }
 
 /* Adjust the iframe inside the widget to align with navbar height */
 #google_translate_element iframe {
-  height: 40px; /* Ensured height for better integration */
-  border: none; /* Removing any default borders */
+  height: 40px; 
+  border: none;
 }
 
 /* Hide the Google Translate bar's branding */
 .goog-te-gadget-icon {
-  display: none !important; /* Ensures no Google icon shows */
+  display: none !important; 
 }
 
 .goog-te-banner-frame {
-  display: none !important; /* Ensures no translation banner shows */
+  display: none !important; 
 }
 
 .goog-te-gadget img {
-  display: none !important; /* Hides any images from Google's gadget */
+  display: none !important;
 }
 
 /* Style adjustments for the dropdown menu */
 .goog-te-gadget-simple {
   border: none;
-  background-color: #ffd300; /* Background color to match the navbar */
-  color: #ffffff; /* Adjusts text color for readability */
+  background-color: #ffd300; 
+  color: #ffffff; 
 }
 
 .goog-te-gadget-simple .goog-te-menu-value {
   padding: 8px 10px;
   line-height: normal;
-  font-size: 14px; /* Adjusted for uniform font sizing */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Matches other navigation texts */
-  border-radius: 25px; /* Rounded borders for aesthetics */
+  font-size: 14px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  border-radius: 25px; 
 }
 
 /* Hover and focus styles for the dropdown */
 .goog-te-gadget-simple .goog-te-menu-value:hover,
 .goog-te-gadget-simple .goog-te-menu-value:focus {
   text-decoration: none;
-  background-color: #feb603; /* Slightly darker on hover for visual feedback */
+  background-color: #feb603; 
 }
 
   /* Responsive Styles */

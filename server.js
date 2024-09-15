@@ -88,7 +88,6 @@ app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
   
   try {
-    // This is a placeholder. In a real app, you'd validate against your database
     const user = { id: Date.now().toString(), name: email.split('@')[0], email, role };
     res.json(user);
   } catch (error) {
