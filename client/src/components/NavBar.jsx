@@ -24,9 +24,7 @@ const NavBar = () => {
           </a>
         </div>
         <nav className="navbar-links right">
-          <a href="login" className="navbar-login">
-            About
-          </a>
+
           <div className="navbar-language">
             <div id="google_translate_element"></div>
           </div>
