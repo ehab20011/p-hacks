@@ -17,7 +17,6 @@ const NavBar = () => {
     <header className="navbar">
       <div className="navbar-container">
         <nav className="navbar-links left">
-          <a href="#about">About</a>
         </nav>
         <div className="navbar-logo">
           <a href="/" className="navbar-brand">
@@ -25,8 +24,8 @@ const NavBar = () => {
           </a>
         </div>
         <nav className="navbar-links right">
-          <a href="#login" className="navbar-login">
-            Sign Up
+          <a href="login" className="navbar-login">
+            About
           </a>
           <div className="navbar-language">
             <div id="google_translate_element"></div>

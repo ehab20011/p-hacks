@@ -20,11 +20,11 @@ body {
   display: flex;
   align-items: stretch;
   width: 100%;
+  margin-top: 900px;
   max-width: 1200px;
   flex-direction: row;
 }
 
-/* Left container styles */
 /* Left container styles */
 .left-container {
   display: flex;
