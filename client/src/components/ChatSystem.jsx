@@ -14,7 +14,7 @@ const ChatSystem = () => {
   useEffect(() => {
     const userName = localStorage.getItem("userName");
     const userRole = localStorage.getItem("userRole");
-    const userId = localStorage.getItem("userId"); // Ensure this is defined
+    const userId = localStorage.getItem("userId");
 
     if (userId && userName && userRole) {
       setUser({ id: userId, name: userName, role: userRole });
@@ -82,18 +82,14 @@ const ChatSystem = () => {
     })
       .then(response => response.json())
       .then(messages => {
-        console.log('Fetched messages:', messages); // Add this line to inspect the messages
-        // Ensure that the chat history is an array (fallback to empty array if no messages)
         setChats(prevChats => ({ ...prevChats, [userId]: Array.isArray(messages) ? messages : [] }));
       })
       .catch(err => console.error('Error fetching messages:', err));
   };
 
-
-
-
   const handleFileChange = (e) => {
-    setFileInput(e.target.files[0]);
+    const file = e.target.files[0];
+    setFileInput(file);
   };
 
   const handleSend = () => {
@@ -109,17 +105,11 @@ const ChatSystem = () => {
       payload: {
         receiverId: selectedChat,
         text: messageInput,
-        senderId: user.id, // Make sure user.id is defined here
+        senderId: user.id,
       }
     };
 
-    setChats((prevChats) => {
-      const updatedChat = prevChats[selectedChat]
-        ? [...prevChats[selectedChat], newMessage.payload]
-        : [newMessage.payload];
-      return { ...prevChats, [selectedChat]: updatedChat };
-    });
-
+    // If there is a file input, read it as a data URL and attach it to the message payload
     if (fileInput) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -138,13 +128,12 @@ const ChatSystem = () => {
           return { ...prevChats, [selectedChat]: updatedChat };
         });
 
-        setFileInput(null);
+        setFileInput(null); // Clear the file input after sending
       };
       reader.readAsDataURL(fileInput);
     } else {
       socketRef.current.send(JSON.stringify(newMessage));
     }
-
 
     setMessageInput("");
   };
@@ -154,7 +143,7 @@ const ChatSystem = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
     socketRef.current.close();
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/login";
   };
 
   return (
@@ -185,35 +174,22 @@ const ChatSystem = () => {
                   {chats[selectedChat]?.map((msg, index) => (
                     <div
                       key={index}
-                      className={`chat-message ${msg.senderId === user.id ? "sent" : "received"
-                        }`}
+                      className={`chat-message ${msg.senderId === user.id ? "sent" : "received"}`}
                     >
                       <div className="message-sender">
-                        {msg.senderId === user.id
-                          ? "You"
-                          : activeUsers.find((u) => u.id === msg.senderId)?.name}
+                        {msg.senderId === user.id ? "You" : activeUsers.find((u) => u.id === msg.senderId)?.name}
                       </div>
                       <div className="message-text">{msg.text}</div>
+                      {msg.file && (
+                        <div className="message-file">
+                          <a href={msg.file.data} download={msg.file.name}>
+                            {msg.file.name}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
-                {/*<div className="chat-messages">
-                  {Array.isArray(chats[selectedChat]) && chats[selectedChat].length > 0 ? (
-                    chats[selectedChat].map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
-                      >
-                        <div className="message-sender">
-                          {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
-                        </div>
-                        <div className="message-text">{msg.text}</div>
-                      </div>
-                    ))
-                  ) : (
-                    <div>No messages yet</div>
-                  )}
-                </div>*/}
 
                 <div className="chat-input-container">
                   <input
