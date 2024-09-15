@@ -3,6 +3,59 @@ html, body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
+  .navbar-language select {
+    font-size: 15px;
+    padding: 8px 12px;
+    border-radius: 25px;
+    border: none;
+    background-color: #ffd300;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+}
+
+.navbar-language  {
+  
+  padding: 8px 12px;
+  border-radius: 25px;
+  /*border: none;*/
+  background-color: #ffd300;
+  color: #ffffff;
+  font-weight: 600;/*
+  cursor: pointer;
+  outline: none;*/
+  transition: background-color 0.3s ease;
+  
+}
+
+.navbar-language select:hover {
+    background-color: #feb603;
+}
+
+.navbar-language select option {
+    background-color: #ffd300;
+    color: #000000;
+}
+
+  .navbar-login {
+    display: flex;
+    justify-content: space-between; /* Aligns children horizontally */
+    align-items: center; /* Aligns children vertically */
+    padding: 8px 20px;
+    border-radius: 25px;
+    background-color: #ffd300;
+    color: #ffffff;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navbar-login:hover {
+    background-color: #feb603;
+  }
+
   
   .navbar {
     width: 100%;
@@ -58,18 +111,7 @@ html, body {
     color: white;
   }
   
-  .navbar-login {
-    padding: 8px 20px;
-    border-radius: 25px;
-    background-color: #ffd300;
-    color: #ffffff;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-  
-  .navbar-login:hover {
-    background-color: #feb603;
-  }
+
   
   /* Responsive Styles */
   @media (max-width: 768px) {
