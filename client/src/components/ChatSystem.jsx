@@ -81,49 +81,46 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system">
-      <div className="chat-container">
-        <div className="active-users">
-          <h2>Active Users</h2>
-          {activeUsers.map((user) => (
-            <div
-              key={user.id}
-              className={`user-item ${selectedChat === user.id ? "active" : ""}`}
-              onClick={() => handleChatClick(user.id)}
-            >
-              {user.name} ({user.role})
+      <NavBar />
+      <div className="chat-list">
+        {activeUsers.map((user) => (
+          <div
+            key={user.id}
+            className={`chat-list-item ${selectedChat === user.id ? "active" : ""}`}
+            onClick={() => handleChatClick(user.id)}
+          >
+            {user.name} ({user.role})
+          </div>
+        ))}
+      </div>
+      <div className="chat-window">
+        {selectedChat ? (
+          <>
+            <div className="chat-messages">
+              {chats[selectedChat]?.messages.map((msg, index) => (
+                <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
+                  <div className="chat-message-text">{msg.text}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="chat-window">
-          {selectedChat ? (
-            <>
-              <div className="chat-messages">
-                {chats[selectedChat]?.messages.map((msg, index) => (
-                  <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
-                    <div className="message-sender">{msg.senderName}</div>
-                    <div className="message-text">{msg.text}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="chat-input-container">
-                <input
-                  type="text"
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  placeholder="Type a message..."
-                  className="chat-input"
-                />
-                <button onClick={handleSend} className="chat-send-button">
-                  Send
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="no-chat-selected">
-              Select a user to start messaging
+            <div className="chat-input-container">
+              <input
+                type="text"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+                placeholder="Type a message..."
+                className="chat-input"
+              />
+              <button onClick={handleSend} className="chat-send-button">
+                Send
+              </button>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="no-chat-selected">
+            Select a user to start messaging
+          </div>
+        )}
       </div>
     </div>
   );
