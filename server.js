@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 
+// Load environment variables
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
@@ -14,10 +15,15 @@ const wss = new WebSocket.Server({ server });
 app.use(cors());
 app.use(express.json());
 
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
 
+// Import models
+const { Refugee, Worker } = require('./mongo_models/model');
+
+// WebSocket setup
 const activeUsers = new Map();
 
 wss.on('connection', function(socket) {
@@ -83,11 +89,70 @@ function getUserIdBySocket(socket) {
   return null;
 }
 
+// POST Refugee signup route
+app.post('/api/signup/Refugee', async (req, res) => {
+  const { name, email, password, age, gender, familyMembers, encampment, language, dateOfBirth, phoneNumber } = req.body;
+  try {
+    const existingRefugee = await Refugee.findOne({ email });
+    if (existingRefugee) {
+      return res.status(400).json({ message: 'Email is already registered' });
+    }
+
+    const newRefugee = new Refugee({
+      name,
+      email,
+      password,  // Hash the password with bcrypt later for security
+      age,
+      gender,
+      familyMembers,
+      encampment,
+      language,
+      dateOfBirth,
+      phoneNumber
+    });
+
+    await newRefugee.save();
+    res.status(201).json({ message: 'Refugee registered successfully', refugee: newRefugee });
+  } catch (error) {
+    console.error('Error registering refugee:', error);
+    res.status(500).json({ message: 'Server error during refugee registration', error });
+  }
+});
+
+// POST Worker signup route
+app.post('/api/signup/worker', async (req, res) => {
+  const { name, email, password, role, encampment, language, dateOfBirth, gender, phoneNumber, idNumber } = req.body;
+  try {
+    const existingWorker = await Worker.findOne({ email });
+    if (existingWorker) {
+      return res.status(400).json({ message: 'Email is already registered' });
+    }
+
+    const newWorker = new Worker({
+      name,
+      email,
+      password,  // Hash the password with bcrypt later for security
+      role,
+      encampment,
+      language,
+      dateOfBirth,
+      gender,
+      phoneNumber,
+      idNumber
+    });
+
+    await newWorker.save();
+    res.status(201).json({ message: 'Worker registered successfully', worker: newWorker });
+  } catch (error) {
+    console.error('Error registering worker:', error);
+    res.status(500).json({ message: 'Server error during worker registration', error });
+  }
+});
+
+// POST API route to handle login
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
-  
   try {
-    // This is a placeholder. In a real app, you'd validate against your database
     const user = { id: Date.now().toString(), name: email.split('@')[0], email, role };
     res.json(user);
   } catch (error) {
@@ -95,10 +160,12 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Serve static files for the React app
 app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/public', 'index.html'));
 });
 
+// Start the server
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server is running on port ${port}`));
