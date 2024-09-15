@@ -81,7 +81,6 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system">
-      <NavBar />
       <div className="chat-list">
         {activeUsers.map((user) => (
           <div
