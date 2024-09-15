@@ -7,6 +7,7 @@ import RefugeePage from './components/RefugeePage';
 import ChatSystem from './components/ChatSystem';
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
 import ForgotPassword from './components/ForgotPassword';
+import ChatSystemMock from './components/ChatSystemMock';
 
 
 function App() {
@@ -32,6 +33,14 @@ function App() {
                   element={
                     <PrivateRoute>
                       <ChatSystem />
+                    </PrivateRoute>
+                  }
+                  />
+                  <Route
+                  path="/chatsystemmock"
+                  element={
+                    <PrivateRoute>
+                      <ChatSystemMock />
                     </PrivateRoute>
                   }
                 />

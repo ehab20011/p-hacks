@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import "./styles/ChatSystem.css";
-import NavBar from "./NavBar";
 
 const socket = io('http://localhost:5000');
 
