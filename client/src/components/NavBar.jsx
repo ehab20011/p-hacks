@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./styles/NavBar.css";
 
 const NavBar = () => {
-  const languages = [
-    "English", "Spanish", "Mandarin", "Hindi", "Arabic", "Portuguese", "Bengali", "Russian", 
-    "Japanese", "Punjabi", "German", "Javanese", "Wu", "Malay", "Telugu", "Vietnamese", 
-    "Korean", "French", "Marathi", "Tamil", "Urdu", "Turkish", "Italian", "Yue (Cantonese)", 
-    "Thai", "Gujarati", "Jin", "Persian", "Polish", "Pashto", "Kannada", "Xiang"
-  ];
+  useEffect(() => {
+    // Ensure the script is only added once
+    if (!window.googleTranslateScriptAdded) {
+      const script = document.createElement('script');
+      script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+      window.googleTranslateScriptAdded = true;
+    }
+  }, []);
 
   return (
     <header className="navbar">
@@ -21,17 +25,11 @@ const NavBar = () => {
           </a>
         </div>
         <nav className="navbar-links right">
-          <a href="#one" className="navbar-login">
-            About
+          <a href="#login" className="navbar-login">
+            Sign Up
           </a>
           <div className="navbar-language">
-            <select>
-              {languages.map((language, index) => (
-                <option key={index} value={language}>
-                  {language}
-                </option>
-              ))}
-            </select>
+            <div id="google_translate_element"></div>
           </div>
         </nav>
       </div>

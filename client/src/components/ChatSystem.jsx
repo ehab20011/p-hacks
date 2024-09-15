@@ -13,44 +13,32 @@ const ChatSystem = () => {
   const [messageInput, setMessageInput] = useState("");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      socket.emit('login', { email: parsedUser.email, role: parsedUser.role });
+    if (user) {
+      socket.emit('login', { email: user.email, role: user.role });
     }
-
+  
     socket.on('login_success', (userData) => {
-      console.log('Login successful:', userData);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
     });
-
+  
     socket.on('login_error', (error) => {
       console.error('Login error:', error);
     });
-
+  
     socket.on('user_list', (users) => {
-      console.log('Received user list:', users);
-      setActiveUsers(users.filter(u => u.id !== user?.id));
+      if (user?.id) {
+        setActiveUsers(users.filter(u => u.id !== user.id));
+      }
     });
-
-    socket.on('receive_message', (message) => {
-      console.log("Received message:", message);
-      setChats(prevChats => {
-        const chatId = message.senderId;
-        const updatedMessages = [...(prevChats[chatId]?.messages || []), message];
-        return { ...prevChats, [chatId]: { ...prevChats[chatId], messages: updatedMessages } };
-      });
-    });
-
+  
     return () => {
       socket.off('login_success');
       socket.off('login_error');
       socket.off('user_list');
-      socket.off('receive_message');
     };
   }, [user]);
+  
 
   const handleSend = () => {
     if (!selectedChat || messageInput.trim() === "") return;
@@ -81,48 +69,53 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system">
-      <div className="chat-list">
-        {activeUsers.map((user) => (
-          <div
-            key={user.id}
-            className={`chat-list-item ${selectedChat === user.id ? "active" : ""}`}
-            onClick={() => handleChatClick(user.id)}
-          >
-            {user.name} ({user.role})
-          </div>
-        ))}
-      </div>
-      <div className="chat-window">
-        {selectedChat ? (
-          <>
-            <div className="chat-messages">
-              {chats[selectedChat]?.messages.map((msg, index) => (
-                <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
-                  <div className="chat-message-text">{msg.text}</div>
-                </div>
-              ))}
+      <div className="chat-container">
+        <div className="active-users">
+          <h2>Active Users</h2>
+          {activeUsers.map((user) => (
+            <div
+              key={user.id}
+              className={`user-item ${selectedChat === user.id ? "active" : ""}`}
+              onClick={() => handleChatClick(user.id)}
+            >
+              {user.name} ({user.role})
             </div>
-            <div className="chat-input-container">
-              <input
-                type="text"
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                placeholder="Type a message..."
-                className="chat-input"
-              />
-              <button onClick={handleSend} className="chat-send-button">
-                Send
-              </button>
+          ))}
+        </div>
+        <div className="chat-window">
+          {selectedChat ? (
+            <>
+              <div className="chat-messages">
+                {chats[selectedChat]?.messages.map((msg, index) => (
+                  <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
+                    <div className="message-sender">{msg.senderName}</div>
+                    <div className="message-text">{msg.text}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="chat-input-container">
+                <input
+                  type="text"
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  placeholder="Type a message..."
+                  className="chat-input"
+                />
+                <button onClick={handleSend} className="chat-send-button">
+                  Send
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="no-chat-selected">
+              Select a user to start messaging
             </div>
-          </>
-        ) : (
-          <div className="no-chat-selected">
-            Select a user to start messaging
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default ChatSystem;
+

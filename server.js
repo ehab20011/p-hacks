@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
       activeUsers.set(socket.id, userData);
       socket.emit('login_success', userData);
       io.emit('user_list', Array.from(activeUsers.values()));
-      console.log(`User logged in: ${user.name}`);
+      console.log("Updated user list:", Array.from(activeUsers.values()));
     } else {
       socket.emit('login_error', 'User not found');
       console.log(`Login failed for ${email}`);
@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
+    console.log(`User disconnected: ${socket.id}, data:`, activeUsers.get(socket.id));
     activeUsers.delete(socket.id);
     io.emit('user_list', Array.from(activeUsers.values()));
   });
