@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
   console.log('A user connected with id:', socket.id);
 
   socket.on('login', async ({ email, role }) => {
+    console.log(`Login attempt: ${email}, ${role}`);
     let user;
     if (role === 'refugee') {
       user = await Refugee.findOne({ email });
@@ -41,11 +42,14 @@ io.on('connection', (socket) => {
     }
 
     if (user) {
-      activeUsers.set(socket.id, { id: user._id, email: user.email, role });
-      socket.emit('login_success', { id: user._id, name: user.name, email: user.email, role });
+      const userData = { id: user._id.toString(), name: user.name, email: user.email, role };
+      activeUsers.set(socket.id, userData);
+      socket.emit('login_success', userData);
       io.emit('user_list', Array.from(activeUsers.values()));
+      console.log(`User logged in: ${user.name}`);
     } else {
       socket.emit('login_error', 'User not found');
+      console.log(`Login failed for ${email}`);
     }
   });
 
@@ -53,9 +57,10 @@ io.on('connection', (socket) => {
     console.log("Message received:", data);
     const sender = activeUsers.get(socket.id);
     if (sender) {
-      io.to(data.receiverId).emit('receive_message', {
+      io.emit('receive_message', {
         ...data,
         senderId: sender.id,
+        senderName: sender.name,
         senderEmail: sender.email,
         senderRole: sender.role
       });

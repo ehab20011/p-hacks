@@ -21,6 +21,7 @@ const ChatSystem = () => {
     }
 
     socket.on('login_success', (userData) => {
+      console.log('Login successful:', userData);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
     });
@@ -30,6 +31,7 @@ const ChatSystem = () => {
     });
 
     socket.on('user_list', (users) => {
+      console.log('Received user list:', users);
       setActiveUsers(users.filter(u => u.id !== user?.id));
     });
 
@@ -57,6 +59,7 @@ const ChatSystem = () => {
       receiverId: selectedChat,
       text: messageInput,
       senderId: user.id,
+      senderName: user.name,
       senderEmail: user.email,
       senderRole: user.role
     };
@@ -78,6 +81,7 @@ const ChatSystem = () => {
 
   return (
     <div className="chat-system">
+      <NavBar />
       <div className="chat-list">
         {activeUsers.map((user) => (
           <div
@@ -85,7 +89,7 @@ const ChatSystem = () => {
             className={`chat-list-item ${selectedChat === user.id ? "active" : ""}`}
             onClick={() => handleChatClick(user.id)}
           >
-            {user.email} ({user.role})
+            {user.name} ({user.role})
           </div>
         ))}
       </div>
