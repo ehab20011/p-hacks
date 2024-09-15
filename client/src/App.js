@@ -7,7 +7,6 @@ import RefugeePage from './components/RefugeePage';
 import ChatSystem from './components/ChatSystem';
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
 import ForgotPassword from './components/ForgotPassword';
-import About from './components/About';
 
 
 function App() {
