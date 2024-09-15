@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./styles/NavBar.css";
 
 const NavBar = () => {
+  const location = useLocation(); 
+
   useEffect(() => {
-    // Ensure the script is only added once
     if (!window.googleTranslateScriptAdded) {
       const script = document.createElement('script');
       script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
@@ -31,9 +33,11 @@ const NavBar = () => {
           <div className="navbar-language">
             <div id="google_translate_element"></div>
           </div>
-          <button className="scroll-about-btn" onClick={scrollToAbout}>
-            About Us
-          </button>
+          {location.pathname === "/login" && (
+            <button className="scroll-about-btn" onClick={scrollToAbout}>
+              About Us
+            </button>
+          )}
         </nav>
       </div>
     </header>

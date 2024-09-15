@@ -117,7 +117,7 @@ const ChatSystem = () => {
         <div className="chat-window">
           {selectedChat ? (
             <>
-              <div className="chat-messages">
+              {/*<div className="chat-messages">
                 {chats[selectedChat]?.map((msg, index) => (
                   <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
                     <div className="message-sender">{msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}</div>
@@ -131,7 +131,21 @@ const ChatSystem = () => {
                     )}
                   </div>
                 ))}
-              </div>
+              </div>*/}
+              <div className="chat-messages">
+  {chats[selectedChat]?.map((msg, index) => (
+    <div
+      key={index}
+      className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}
+    >
+      <div className="message-sender">
+        {msg.senderId === user.id ? 'You' : activeUsers.find(u => u.id === msg.senderId)?.name}
+      </div>
+      <div className="message-text">{msg.text}</div>
+    </div>
+  ))}
+</div>
+
               <div className="chat-input-container">
                 <input
                   type="text"
