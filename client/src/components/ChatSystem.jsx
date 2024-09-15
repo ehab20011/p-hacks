@@ -1,47 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
 import "./styles/ChatSystem.css";
 import NavBar from "./NavBar";
 
+const socket = io('http://localhost:5000');
+
 const ChatSystem = () => {
+  const [user, setUser] = useState(null);
+  const [activeUsers, setActiveUsers] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [chats, setChats] = useState([
-    { id: 1, name: "John Doe", messages: [] },
-    { id: 2, name: "Jane Smith", messages: [] },
-  ]);
+  const [chats, setChats] = useState({});
   const [messageInput, setMessageInput] = useState("");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      socket.emit('login', { email: parsedUser.email, role: parsedUser.role });
+    }
+
+    socket.on('login_success', (userData) => {
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+    });
+
+    socket.on('login_error', (error) => {
+      console.error('Login error:', error);
+    });
+
+    socket.on('user_list', (users) => {
+      setActiveUsers(users.filter(u => u.id !== user?.id));
+    });
+
+    socket.on('receive_message', (message) => {
+      console.log("Received message:", message);
+      setChats(prevChats => {
+        const chatId = message.senderId;
+        const updatedMessages = [...(prevChats[chatId]?.messages || []), message];
+        return { ...prevChats, [chatId]: { ...prevChats[chatId], messages: updatedMessages } };
+      });
+    });
+
+    return () => {
+      socket.off('login_success');
+      socket.off('login_error');
+      socket.off('user_list');
+      socket.off('receive_message');
+    };
+  }, [user]);
 
   const handleSend = () => {
     if (!selectedChat || messageInput.trim() === "") return;
 
-    const updatedChats = chats.map((chat) => {
-      if (chat.id === selectedChat.id) {
-        return {
-          ...chat,
-          messages: [...chat.messages, { text: messageInput, sender: "user" }],
-        };
-      }
-      return chat;
+    const newMessage = {
+      receiverId: selectedChat,
+      text: messageInput,
+      senderId: user.id,
+      senderEmail: user.email,
+      senderRole: user.role
+    };
+
+    console.log("Sending message:", newMessage);
+    socket.emit('send_message', newMessage);
+
+    setChats(prevChats => {
+      const updatedMessages = [...(prevChats[selectedChat]?.messages || []), newMessage];
+      return { ...prevChats, [selectedChat]: { ...prevChats[selectedChat], messages: updatedMessages } };
     });
-    setChats(updatedChats);
+
     setMessageInput("");
   };
-  const handleChatClick = (chat) => {
-    setSelectedChat(chat);
+
+  const handleChatClick = (userId) => {
+    setSelectedChat(userId);
   };
 
   return (
     <div className="chat-system">
       <NavBar />
       <div className="chat-list">
-        {chats.map((chat) => (
+        {activeUsers.map((user) => (
           <div
-            key={chat.id}
-            className={`chat-list-item ${
-              selectedChat?.id === chat.id ? "active" : ""
-            }`}
-            onClick={() => handleChatClick(chat)}
+            key={user.id}
+            className={`chat-list-item ${selectedChat === user.id ? "active" : ""}`}
+            onClick={() => handleChatClick(user.id)}
           >
-            {chat.name}
+            {user.email} ({user.role})
           </div>
         ))}
       </div>
@@ -49,8 +94,8 @@ const ChatSystem = () => {
         {selectedChat ? (
           <>
             <div className="chat-messages">
-              {selectedChat.messages.map((msg, index) => (
-                <div key={index} className={`chat-message ${msg.sender}`}>
+              {chats[selectedChat]?.messages.map((msg, index) => (
+                <div key={index} className={`chat-message ${msg.senderId === user.id ? 'sent' : 'received'}`}>
                   <div className="chat-message-text">{msg.text}</div>
                 </div>
               ))}
@@ -70,11 +115,12 @@ const ChatSystem = () => {
           </>
         ) : (
           <div className="no-chat-selected">
-            Select a chat to start messaging
+            Select a user to start messaging
           </div>
         )}
       </div>
     </div>
   );
 };
+
 export default ChatSystem;
