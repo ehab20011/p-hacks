@@ -53,7 +53,9 @@ const ChatSystem = () => {
     };
 
     return () => {
-      socketRef.current.close();
+      if (socketRef.current) {
+        socketRef.current.close(); // Cleanup connection on unmount
+      }
     };
   }, []);
 

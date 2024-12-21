@@ -34,16 +34,22 @@ function Login() {
         if (!data.id) {
           throw new Error("User ID not provided by the server");
         }
-        
+
+        // Save data in localStorage
         localStorage.setItem("userName", data.name);
         localStorage.setItem("userRole", role);
         localStorage.setItem("userId", data.id);
+
+        // Log confirmation
         console.log(
           `${role.charAt(0).toUpperCase() + role.slice(1)} logged in:`,
           data.name,
           "ID:",
           data.id
         );
+        console.log("Stored User ID:", localStorage.getItem("userId"));
+
+        // Navigate to chat system
         navigate("/chatsystem");
       } else {
         console.error("Error from server:", data.message);
@@ -66,7 +72,6 @@ function Login() {
   };
 
   return (
-
     <div>
       <div className="main">
         <NavBar />

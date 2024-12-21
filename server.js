@@ -4,6 +4,7 @@ const WebSocket = require('ws');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const bcrypt = require("bcrypt");
 const path = require('path');
 
 // Load environment variables
@@ -16,9 +17,9 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection failed:', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
 
 // Import models
 const { Refugee, Worker, Message } = require('./mongo_models/model');
@@ -27,12 +28,8 @@ const { Refugee, Worker, Message } = require('./mongo_models/model');
 const activeUsers = new Map();
 
 wss.on('connection', function(socket) {
-  console.log('A user connected');
-
   socket.on('message', function incoming(message) {
     const data = JSON.parse(message);
-    console.log('Received:', data);
-
     switch (data.type) {
       case 'login':
         handleLogin(socket, data.payload);
@@ -44,18 +41,21 @@ wss.on('connection', function(socket) {
   });
 
   socket.on('close', () => {
+    console.log('Socket closed');
     const userId = getUserIdBySocket(socket);
     if (userId) {
       activeUsers.delete(userId);
       broadcastActiveUsers();
+      console.log(`${userId} disconnected`);
     }
-    console.log('A user disconnected');
   });
 });
 
 function handleLogin(socket, user) {
   activeUsers.set(user.id, { socket, ...user });
-  socket.userId = user.id;
+  socket.user = user;
+  activeUsers.set(user.id, { socket, ...user });
+  console.log(`${user.name} is connected`);
   broadcastActiveUsers();
 }
 
@@ -88,7 +88,6 @@ function handleSendMessage(message) {
   }
 }
 
-
 function broadcastActiveUsers() {
   const users = Array.from(activeUsers.values()).map(({ id, name, role }) => ({ id, name, role }));
   const message = JSON.stringify({ type: 'active_users', payload: users });
@@ -109,25 +108,20 @@ function getUserIdBySocket(socket) {
 }
 
 // POST Refugee signup route
-app.post('/api/signup/Refugee', async (req, res) => {
-  const { name, email, password, age, gender, familyMembers, encampment, language, dateOfBirth, phoneNumber } = req.body;
+app.post('/api/signup/refugee', async (req, res) => {
+  const { name, email, password, ...rest } = req.body;
   try {
     const existingRefugee = await Refugee.findOne({ email });
     if (existingRefugee) {
       return res.status(400).json({ message: 'Email is already registered' });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash password
     const newRefugee = new Refugee({
       name,
       email,
-      password,  // Hash the password with bcrypt later for security
-      age,
-      gender,
-      familyMembers,
-      encampment,
-      language,
-      dateOfBirth,
-      phoneNumber
+      password: hashedPassword, // Store the hashed password
+      ...rest,
     });
 
     await newRefugee.save();
@@ -147,17 +141,18 @@ app.post('/api/signup/worker', async (req, res) => {
       return res.status(400).json({ message: 'Email is already registered' });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash password
     const newWorker = new Worker({
       name,
       email,
-      password,  // Hash the password with bcrypt later for security
+      password: hashedPassword, // Store the hashed password
       role,
       encampment,
       language,
       dateOfBirth,
       gender,
       phoneNumber,
-      idNumber
+      idNumber,
     });
 
     await newWorker.save();
@@ -171,11 +166,34 @@ app.post('/api/signup/worker', async (req, res) => {
 // POST API route to handle login
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body;
+
   try {
-    const user = { id: Date.now().toString(), name: email.split('@')[0], email, role };
-    res.json(user);
+    const model = role === "refugee" ? Refugee : Worker;
+
+    const normalizedEmail = email.trim();
+    const user = await model.findOne({ email: normalizedEmail });
+
+    if (!user) {
+      console.log(`User not found: ${email}`);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Validate password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      console.log(`Invalid password for user: ${email}`);
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Respond with user details
+    res.json({
+      id: user._id,
+      name: user.name,
+      role,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "Server error during login" });
   }
 });
 
@@ -187,9 +205,9 @@ app.post('/api/getMessages', async (req, res) => {
     const messages = await Message.find({
       $or: [
         { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId }
-      ]
-    }).sort({ createdAt: 1 }); // Sort by date to get the correct order
+        { senderId: receiverId, receiverId: senderId },
+      ],
+    }).sort({ createdAt: 1 });
     res.json(messages);
   } catch (error) {
     console.error('Error fetching messages:', error);

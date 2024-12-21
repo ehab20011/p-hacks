@@ -47,7 +47,7 @@ const messageSchema = new mongoose.Schema({
 
 module.exports = {
   Refugee: mongoose.model('Refugee', refugeeSchema, 'Refugees'),
-  Worker: mongoose.model('Worker', workerSchema),
+  Worker: mongoose.model('Worker', workerSchema, 'workers'),
   Message: mongoose.model('Message', messageSchema, 'Messages')
 };
 
