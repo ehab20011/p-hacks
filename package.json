@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon server.js",
-    "client": "npm start --prefix client"
-  },
+    "start": "node server.js",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "install": "npm install && npm run install-client"
+  }
+  ,
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -27,5 +29,7 @@
     "concurrently": "^9.1.0",
     "nodemon": "^3.1.4"
   },
+  "dev": "concurrently \"npm run server\" \"npm run client\""
+  ,
   "proxy": "http://localhost:5000"
 }
