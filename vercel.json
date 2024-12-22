@@ -22,6 +22,12 @@
         "src": "/(.*)",
         "dest": "/client/build/$1"
       }
+    ],
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
     ]
   }
   
