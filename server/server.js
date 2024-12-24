@@ -115,13 +115,12 @@ function getUserIdBySocket(socket) {
 app.get('/api/db-test', async (req, res) => {
   try {
     const result = await mongoose.connection.db.admin().ping();
-    res.json({ message: 'Database connection is working!', result });
+    res.json({ message: 'The MONGODB Database connection is working!', result });
   } catch (error) {
     console.error('Database connection error:', error);
     res.status(500).json({ message: 'Database connection error', error });
   }
 });
-
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working!' });
 });
