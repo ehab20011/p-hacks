@@ -22,12 +22,35 @@ app.use(express.json());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+  })
   .catch(err => {
-    console.error('Error connecting to MongoDB:', err.message);
+    console.error('❌ Error connecting to MongoDB:', err.message);
+    if (err.reason) {
+      console.error('Reason:', err.reason);
+    }
+    if (err.stack) {
+      console.error('Stack Trace:', err.stack);
+    }
     console.error('Full error details:', err);
   });
-
+// Log MongoDB connection states
+mongoose.connection.on('connecting', () => {
+  console.log('🔄 MongoDB: Connecting...');
+});
+mongoose.connection.on('connected', () => {
+  console.log('✅ MongoDB: Connected');
+});
+mongoose.connection.on('disconnected', () => {
+  console.log('❌ MongoDB: Disconnected');
+});
+mongoose.connection.on('reconnectFailed', () => {
+  console.error('❌ MongoDB: Reconnection failed');
+});
+mongoose.connection.on('error', (error) => {
+  console.error('❌ MongoDB: Connection error', error.message);
+});
 
 // Import models
 const { Refugee, Worker, Message } = require('./mongo_models/model');
@@ -116,6 +139,32 @@ function getUserIdBySocket(socket) {
 }
 
 //Testing Purposes
+// Endpoint to test environment variables
+app.get('/api/debug/env', (req, res) => {
+  if (!process.env.MONGO_URI) {
+    console.error('❌ MONGO_URI is not defined');
+    return res.status(500).json({ message: 'MONGO_URI is not defined in environment variables' });
+  }
+  console.log('✅ MONGO_URI is defined:', process.env.MONGO_URI);
+  res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGO_URI });
+});
+// Endpoint to test MongoDB connection state
+app.get('/api/debug/mongo-state', (req, res) => {
+  const connectionState = mongoose.connection.readyState;
+  const connectionStatus = {
+    0: 'Disconnected',
+    1: 'Connected',
+    2: 'Connecting',
+    3: 'Disconnecting',
+  };
+
+  console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
+  res.json({
+    state: connectionState,
+    status: connectionStatus[connectionState],
+  });
+});
+
 app.get('/api/db-test', async (req, res) => {
   try {
     const result = await mongoose.connection.db.admin().ping();
