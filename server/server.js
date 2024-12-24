@@ -21,9 +21,13 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err));
+  .catch(err => {
+    console.error('Error connecting to MongoDB:', err.message);
+    console.error('Full error details:', err);
+  });
+
 
 // Import models
 const { Refugee, Worker, Message } = require('./mongo_models/model');
@@ -121,6 +125,30 @@ app.get('/api/db-test', async (req, res) => {
     res.status(500).json({ message: 'Database connection error', error });
   }
 });
+app.get('/api/db-debug', async (req, res) => {
+  try {
+    const connectionState = mongoose.connection.readyState;
+    const connectionStatus = {
+      0: 'Disconnected',
+      1: 'Connected',
+      2: 'Connecting',
+      3: 'Disconnecting'
+    };
+    console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
+    
+    if (connectionState !== 1) {
+      throw new Error(`Connection not established: ${connectionStatus[connectionState]}`);
+    }
+
+    // Perform a simple admin command to confirm
+    const result = await mongoose.connection.db.admin().ping();
+    res.json({ message: 'MongoDB is working!', result });
+  } catch (error) {
+    console.error('MongoDB debug error:', error.message);
+    res.status(500).json({ message: 'Database debug error', error: error.message });
+  }
+});
+
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working!' });
 });
