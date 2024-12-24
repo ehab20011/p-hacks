@@ -15,6 +15,8 @@ const SignupWorker = () => {
   const [gender, setGender] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const BASE_API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const SignupWorker = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/signup/worker", {
+      const response = await fetch(`${BASE_API_URL}/api/signup/worker`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

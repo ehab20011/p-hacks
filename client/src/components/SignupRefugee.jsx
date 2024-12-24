@@ -17,7 +17,8 @@ const SignupRefugee = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const navigate = useNavigate(); // Create navigate function
+  const navigate = useNavigate(); // Create navigate function'
+  const BASE_API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -39,7 +40,7 @@ const SignupRefugee = () => {
 
     try {
       // Sending a POST request to the backend
-      const response = await fetch("http://localhost:5000/api/signup/refugee", {
+      const response = await fetch(`${BASE_API_URL}/api/signup/refugee`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
