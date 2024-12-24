@@ -111,6 +111,14 @@ function getUserIdBySocket(socket) {
   return null;
 }
 
+//Testing Purposes
+app.get('/', (req, res) => {
+  res.send('Server is running!');
+});
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
+
 // POST Refugee signup route
 app.post('/api/signup/refugee', async (req, res) => {
   const { name, email, password, ...rest } = req.body;
