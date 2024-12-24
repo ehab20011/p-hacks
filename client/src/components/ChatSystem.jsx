@@ -10,6 +10,8 @@ const ChatSystem = () => {
   const [messageInput, setMessageInput] = useState("");
   const [fileInput, setFileInput] = useState(null);
   const socketRef = useRef(null);
+  const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:5000';
+  const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     const userName = localStorage.getItem("userName");
@@ -21,8 +23,7 @@ const ChatSystem = () => {
     } else {
       console.error("User data is missing in localStorage");
     }
-
-    socketRef.current = new WebSocket('ws://localhost:5000');
+    socketRef.current = new WebSocket(WEBSOCKET_URL);
 
     socketRef.current.onopen = () => {
       console.log("Connected to WebSocket");
@@ -72,15 +73,15 @@ const ChatSystem = () => {
   const handleChatClick = (userId) => {
     setSelectedChat(userId);
 
-    fetch('/api/getMessages', {
+    fetch(`${BASE_API_URL}/api/getMessages`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         senderId: user.id,
-        receiverId: userId
-      })
+        receiverId: userId,
+      }),
     })
       .then(response => response.json())
       .then(messages => {

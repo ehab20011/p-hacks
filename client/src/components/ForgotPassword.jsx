@@ -5,19 +5,38 @@ import NavBar from "./NavBar";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const BASE_API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  const handleSubmit = (e) => {
+
+const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    if (email) {
-      // Simulate an API call or form submission
-      setMessage(
-        "If an account with this email exists, a reset link will be sent."
-      );
-    } else {
+    if (!email) {
       setMessage("Please enter your email address.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_API_URL}/api/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage("If an account with this email exists, a reset link will be sent.");
+      } else {
+        setMessage(result.message || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("Failed to send reset link. Please try again later.");
     }
   };
+
 
   return (
     <div>
