@@ -13,7 +13,11 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // MongoDB connection
@@ -215,11 +219,11 @@ app.post('/api/getMessages', async (req, res) => {
   }
 });
 
-// Serve static files for the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// 404 for Undefined Routes
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
+
 
 // Start the server
 const port = process.env.PORT || 5000;
