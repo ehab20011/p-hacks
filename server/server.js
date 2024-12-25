@@ -193,7 +193,6 @@ app.get('/api/db-debug', async (req, res) => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             serverSelectionTimeoutMS: 60000,
-            keepAlive: true,
             socketTimeoutMS: 30000,
         });
       }
