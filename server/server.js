@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 60000, })
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 60000, })
   .then(() => {
     console.log('✅ Connected to MongoDB');
   })
@@ -141,12 +141,12 @@ function getUserIdBySocket(socket) {
 //Testing Purposes
 // Endpoint to test environment variables
 app.get('/api/debug/env', (req, res) => {
-  if (!process.env.MONGODB_URI) {
+  if (!process.env.MONGO_URI) {
     console.error('❌ MONGO_URI is not defined');
     return res.status(500).json({ message: 'MONGO_URI is not defined in environment variables' });
   }
-  console.log('✅ MONGO_URI is defined:', process.env.MONGODB_URI);
-  res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGODB_URI });
+  console.log('✅ MONGO_URI is defined:', process.env.MONGO_URI);
+  res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGO_URI });
 });
 // Endpoint to test MongoDB connection state
 app.get('/api/debug/mongo-state', (req, res) => {
@@ -176,30 +176,48 @@ app.get('/api/db-test', async (req, res) => {
 });
 app.get('/api/db-debug', async (req, res) => {
   try {
-    const connectionState = mongoose.connection.readyState;
-    const connectionStatus = {
-      0: 'Disconnected',
-      1: 'Connected',
-      2: 'Connecting',
-      3: 'Disconnecting'
-    };
-    console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
-    
-    if (connectionState !== 1) {
-      throw new Error(`Connection not established: ${connectionStatus[connectionState]}`);
-    }
-
-    // Perform a simple admin command to confirm
-    const result = await mongoose.connection.db.admin().ping();
-    res.json({ message: 'MongoDB is working!', result });
+      console.log('MongoDB URI exists:', !!process.env.MONGO_URI);
+      
+      const connectionState = mongoose.connection.readyState;
+      const connectionStatus = {
+          0: 'Disconnected',
+          1: 'Connected',
+          2: 'Connecting',
+          3: 'Disconnecting'
+      };
+      console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
+      
+      if (connectionState !== 1) {
+          console.log('Attempting to reconnect...');
+          await mongoose.connect(process.env.MONGO_URI, {
+              useNewUrlParser: true,
+              useUnifiedTopology: true,
+              serverSelectionTimeoutMS: 60000,
+          });
+      }
+      
+      const result = await mongoose.connection.db.admin().ping();
+      
+      res.json({
+          status: 'success',
+          connectionState: connectionStatus[connectionState],
+          pingResult: result,
+          databaseName: mongoose.connection.db.databaseName
+      });
   } catch (error) {
-    console.error('MongoDB debug error:', error.message);
-    res.status(500).json({ message: 'Database debug error', error: error.message });
+      console.error('Full error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+      });
+      
+      res.status(500).json({
+          status: 'error',
+          error: error.message,
+          connectionState: mongoose.connection.readyState,
+          envVarExists: !!process.env.MONGO_URI
+      });
   }
-});
-
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working!' });
 });
 
 // POST Refugee signup route
