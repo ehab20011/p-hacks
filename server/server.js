@@ -176,7 +176,7 @@ app.get('/api/db-test', async (req, res) => {
 });
 app.get('/api/db-debug', async (req, res) => {
   try {
-      console.log('MongoDB URI exists:', !!process.env.MONGO_URI);
+      console.log('MongoDB URI exists:', !!process.env.MONGODB_URI);
       
       const connectionState = mongoose.connection.readyState;
       const connectionStatus = {
@@ -187,26 +187,26 @@ app.get('/api/db-debug', async (req, res) => {
       };
       console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
       
-      if (connectionState !== 1) {
-        console.log('Attempting to reconnect...');
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 60000,
-            socketTimeoutMS: 30000,
-        });
+      // wait function ig
+      if (connectionState === 2) {
+          await new Promise((resolve, reject) => {
+              mongoose.connection.once('connected', resolve);
+              mongoose.connection.once('error', reject);
+              setTimeout(() => reject(new Error('Connection timeout')), 5000);
+          });
       }
       
-      const result = await mongoose.connection.db.admin().ping();
+      // let's try to list collections without admin privileges
+      const collections = await mongoose.connection.db.listCollections().toArray();
       
       res.json({
           status: 'success',
-          connectionState: connectionStatus[connectionState],
-          pingResult: result,
+          connectionState: connectionStatus[mongoose.connection.readyState],
+          collections: collections.map(col => col.name),
           databaseName: mongoose.connection.db.databaseName
       });
   } catch (error) {
-      console.error('Full error details:', {
+      console.error('Database debug error:', {
           name: error.name,
           message: error.message,
           stack: error.stack
@@ -216,7 +216,7 @@ app.get('/api/db-debug', async (req, res) => {
           status: 'error',
           error: error.message,
           connectionState: mongoose.connection.readyState,
-          envVarExists: !!process.env.MONGO_URI
+          envVarExists: !!process.env.MONGODB_URI
       });
   }
 });
