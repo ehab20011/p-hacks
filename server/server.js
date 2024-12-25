@@ -6,12 +6,13 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bcrypt = require("bcrypt");
 const path = require('path');
+const Ably = require('ably');
+
 
 // Load environment variables
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 
 app.use(cors({
   origin: '*',
@@ -55,91 +56,20 @@ mongoose.connection.on('error', (error) => {
 // Import models
 const { Refugee, Worker, Message } = require('./mongo_models/model');
 
-// WebSocket setup
-const activeUsers = new Map();
+// Initialize Ably
+const ably = new Ably.Realtime(process.env.ABLY_API_KEY);
 
-wss.on('connection', function(socket) {
-  socket.on('message', function incoming(message) {
-    const data = JSON.parse(message);
-    switch (data.type) {
-      case 'login':
-        handleLogin(socket, data.payload);
-        break;
-      case 'send_message':
-        handleSendMessage(data.payload);
-        break;
-    }
-  });
+// Set up the "chat" channel
+const chatChannel = ably.channels.get("chat");
 
-  socket.on('close', () => {
-    console.log('Socket closed');
-    const userId = getUserIdBySocket(socket);
-    if (userId) {
-      activeUsers.delete(userId);
-      broadcastActiveUsers();
-      console.log(`${userId} disconnected`);
-    }
-  });
+// Handle Ably messaging
+chatChannel.subscribe('message', (msg) => {
+  console.log('Message received:', msg.data);
 });
 
-function handleLogin(socket, user) {
-  activeUsers.set(user.id, { socket, ...user });
-  socket.user = user;
-  activeUsers.set(user.id, { socket, ...user });
-  console.log(`${user.name} is connected`);
-  broadcastActiveUsers();
-}
-
-function handleSendMessage(message) {
-  const { senderId, receiverId, text, file } = message;
-
-  // Store the message in MongoDB
-  const newMessage = new Message({
-    senderId,
-    receiverId,
-    text,
-    file: file ? {
-      name: file.name,
-      type: file.type,
-      data: file.data,
-    } : null,
-  });
-
-  newMessage.save()
-    .then(() => console.log('Message stored in DB'))
-    .catch(err => console.error('Error saving message to DB:', err));
-
-  // Send the message to the receiver
-  const receiverSocket = activeUsers.get(receiverId)?.socket;
-  if (receiverSocket && receiverSocket.readyState === WebSocket.OPEN) {
-    receiverSocket.send(JSON.stringify({
-      type: 'new_message',
-      payload: { senderId, text, file }
-    }));
-  }
-}
-
-function broadcastActiveUsers() {
-  const users = Array.from(activeUsers.values()).map(({ id, name, role }) => ({ id, name, role }));
-  const message = JSON.stringify({ type: 'active_users', payload: users });
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(message);
-    }
-  });
-}
-
-function getUserIdBySocket(socket) {
-  for (let [userId, user] of activeUsers) {
-    if (user.socket === socket) {
-      return userId;
-    }
-  }
-  return null;
-}
 
 //Testing Purposes
-// Endpoint to test environment variables
+//Endpoint to test environment variables
 app.get('/api/debug/env', (req, res) => {
   if (!process.env.MONGO_URI) {
     console.error('❌ MONGO_URI is not defined');
@@ -147,32 +77,6 @@ app.get('/api/debug/env', (req, res) => {
   }
   console.log('✅ MONGO_URI is defined:', process.env.MONGO_URI);
   res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGO_URI });
-});
-// Endpoint to test MongoDB connection state
-app.get('/api/debug/mongo-state', (req, res) => {
-  const connectionState = mongoose.connection.readyState;
-  const connectionStatus = {
-    0: 'Disconnected',
-    1: 'Connected',
-    2: 'Connecting',
-    3: 'Disconnecting',
-  };
-
-  console.log(`MongoDB Connection State: ${connectionStatus[connectionState]}`);
-  res.json({
-    state: connectionState,
-    status: connectionStatus[connectionState],
-  });
-});
-
-app.get('/api/db-test', async (req, res) => {
-  try {
-    const result = await mongoose.connection.db.admin().ping();
-    res.json({ message: 'The MONGODB Database connection is working!', result });
-  } catch (error) {
-    console.error('Database connection error:', error);
-    res.status(500).json({ message: 'Database connection error', error });
-  }
 });
 app.get('/api/db-debug', async (req, res) => {
   try {
@@ -321,15 +225,31 @@ app.post('/api/getMessages', async (req, res) => {
 
   try {
     const messages = await Message.find({
-      $or: [
-        { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId },
-      ],
+      $or: [{ senderId, receiverId }, { senderId: receiverId, receiverId: senderId }],
     }).sort({ createdAt: 1 });
+
     res.json(messages);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ message: 'Error fetching messages' });
+  }
+});
+
+// Endpoint to publish messages via Ably
+app.post('/api/sendMessage', async (req, res) => {
+  const { senderId, receiverId, text, file } = req.body;
+
+  try {
+    // Store the message in MongoDB
+    const newMessage = new Message({ senderId, receiverId, text, file });
+    await newMessage.save();
+
+    // Publish the message via Ably
+    chatChannel.publish('message', { senderId, receiverId, text, file });
+    res.status(200).json({ message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ message: 'Error sending message' });
   }
 });
 
