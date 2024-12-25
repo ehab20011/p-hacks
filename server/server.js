@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 60000, })
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 60000, })
   .then(() => {
     console.log('✅ Connected to MongoDB');
   })
@@ -141,12 +141,12 @@ function getUserIdBySocket(socket) {
 //Testing Purposes
 // Endpoint to test environment variables
 app.get('/api/debug/env', (req, res) => {
-  if (!process.env.MONGODB_URI) {
+  if (!process.env.MONGO_URI) {
     console.error('❌ MONGO_URI is not defined');
     return res.status(500).json({ message: 'MONGO_URI is not defined in environment variables' });
   }
-  console.log('✅ MONGO_URI is defined:', process.env.MONGODB_URI);
-  res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGODB_URI });
+  console.log('✅ MONGO_URI is defined:', process.env.MONGO_URI);
+  res.json({ message: 'MONGO_URI is defined', uri: process.env.MONGO_URI });
 });
 // Endpoint to test MongoDB connection state
 app.get('/api/debug/mongo-state', (req, res) => {
