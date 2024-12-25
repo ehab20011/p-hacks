@@ -15,7 +15,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(cors({
-  origin: '*',
+  origin: ["https://refu-front.vercel.app"],
   credentials: true,
 }));
 
